@@ -36,9 +36,10 @@ Examples:
                            help="Project template")
     
     # dev command
-    dev_parser = subparsers.add_parser("dev", help="Start development server")
+    dev_parser = subparsers.add_parser("dev", help="Start development server with auto-reload")
     dev_parser.add_argument("--port", "-p", type=int, default=8000, help="Port")
     dev_parser.add_argument("--host", default="0.0.0.0", help="Host")
+    dev_parser.add_argument("--no-reload", action="store_true", help="Disable auto-reload")
     
     # run command
     run_parser = subparsers.add_parser("run", help="Run a Ludwig file")
@@ -52,7 +53,7 @@ Examples:
     if args.command == "new":
         create_project(args.name, args.template)
     elif args.command == "dev":
-        run_dev_server(args.host, args.port)
+        run_dev_server(args.host, args.port, not args.no_reload)
     elif args.command == "run":
         run_file(args.file)
     elif args.command == "version":
@@ -121,11 +122,23 @@ def create_project(name: str, template: str):
     print("  python app.py")
 
 
-def run_dev_server(host: str, port: int):
-    """Start development server."""
+def run_dev_server(host: str, port: int, reload: bool = True):
+    """Start development server with auto-reload."""
     if os.path.exists("app.py"):
         print(f"Starting dev server at http://{host}:{port}")
-        os.system(f"{sys.executable} app.py")
+        if reload:
+            print("Auto-reload enabled (watching .py files)")
+        
+        # Import and run with reload
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("app", "app.py")
+        module = importlib.util.module_from_spec(spec)
+        
+        # Set environment to enable reload in app.run()
+        if reload:
+            os.environ['LUDWIG_DEV_RELOAD'] = '1'
+        
+        spec.loader.exec_module(module)
     else:
         print("No app.py found. Create one or use 'ludwig new <name>'")
 

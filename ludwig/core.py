@@ -162,8 +162,25 @@ class App:
     
     # === Run ===
     
-    def run(self, host: str = None, port: int = None, debug: bool = None):
-        """Start the application."""
+    def run(self, host: str = None, port: int = None, debug: bool = None, reload: bool = False):
+        """Start the application.
+        
+        Args:
+            host: Server host (default: 0.0.0.0)
+            port: Server port (default: 8000)
+            debug: Enable debug mode
+            reload: Auto-reload on file changes (for development)
+        """
+        import os
+        
+        # Check if we're in a reload subprocess
+        if os.environ.get('LUDWIG_NO_RELOAD'):
+            reload = False
+        
+        # Check if dev server requested reload
+        if os.environ.get('LUDWIG_DEV_RELOAD'):
+            reload = True
+        
         host = host or self.config.host
         port = port or self.config.port
         debug = debug if debug is not None else self.config.debug
@@ -171,19 +188,21 @@ class App:
         print(f"🚀 Ludwig {self.name} starting...")
         print(f"   Host: {host}:{port}")
         print(f"   Debug: {debug}")
+        if reload:
+            print(f"   Reload: enabled")
         
         if self._routes:
-            self._start_web_server(host, port, debug)
+            self._start_web_server(host, port, debug, reload)
         elif self._events or self._tasks:
             self._start_event_loop()
         else:
             print("   No routes or events registered.")
     
-    def _start_web_server(self, host: str, port: int, debug: bool):
+    def _start_web_server(self, host: str, port: int, debug: bool, reload: bool = False):
         """Start the web server."""
         from ludwig.web import Web
         self._web = Web(routes=self._routes)
-        self._web.run(host=host, port=port, debug=debug)
+        self._web.run(host=host, port=port, debug=debug, reload=reload)
     
     def _start_event_loop(self):
         """Start the event loop for IoT/scheduled tasks."""

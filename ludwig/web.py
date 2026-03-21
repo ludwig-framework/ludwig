@@ -219,8 +219,86 @@ class Web:
         }
         return types.get(ext, "application/octet-stream")
     
-    def run(self, host: str = "0.0.0.0", port: int = 8000, debug: bool = False):
+    def run(self, host: str = "0.0.0.0", port: int = 8000, debug: bool = False, reload: bool = False):
         """Start the web server."""
+        if reload:
+            self._run_with_reload(host, port, debug)
+        else:
+            self._run_server(host, port, debug)
+    
+    def _run_with_reload(self, host: str, port: int, debug: bool):
+        """Run server with auto-reload on file changes."""
+        import subprocess
+        import sys
+        import time
+        
+        print(f"   Auto-reload enabled (watching .py files)")
+        
+        # Get the main script
+        main_script = sys.argv[0] if sys.argv[0].endswith('.py') else None
+        if not main_script:
+            print("   Warning: Could not detect main script, reload disabled")
+            self._run_server(host, port, debug)
+            return
+        
+        watch_dir = os.path.dirname(os.path.abspath(main_script)) or "."
+        
+        def get_mtimes():
+            """Get modification times for all .py files."""
+            mtimes = {}
+            for root, dirs, files in os.walk(watch_dir):
+                # Skip hidden dirs and common non-code dirs
+                dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ('__pycache__', 'node_modules', '.venv', 'venv')]
+                for f in files:
+                    if f.endswith('.py'):
+                        path = os.path.join(root, f)
+                        try:
+                            mtimes[path] = os.stat(path).st_mtime
+                        except OSError:
+                            pass
+            return mtimes
+        
+        last_mtimes = get_mtimes()
+        process = None
+        
+        while True:
+            # Start the server process
+            env = os.environ.copy()
+            env['LUDWIG_NO_RELOAD'] = '1'  # Prevent child from also reloading
+            
+            process = subprocess.Popen(
+                [sys.executable, main_script],
+                env=env
+            )
+            
+            # Watch for changes
+            while process.poll() is None:
+                time.sleep(1)
+                current_mtimes = get_mtimes()
+                
+                changed = False
+                for path, mtime in current_mtimes.items():
+                    if path not in last_mtimes or last_mtimes[path] != mtime:
+                        print(f"\n   Detected change in {os.path.basename(path)}, reloading...")
+                        changed = True
+                        break
+                
+                if changed:
+                    process.terminate()
+                    process.wait()
+                    last_mtimes = current_mtimes
+                    break
+            
+            # If process exited without file change, check exit code
+            if process.returncode is not None and process.returncode != 0:
+                print(f"   Server exited with code {process.returncode}")
+                print("   Waiting for file changes to restart...")
+                while get_mtimes() == last_mtimes:
+                    time.sleep(1)
+                last_mtimes = get_mtimes()
+    
+    def _run_server(self, host: str, port: int, debug: bool):
+        """Run the actual HTTP server."""
         web = self
         
         class Handler(BaseHTTPRequestHandler):
