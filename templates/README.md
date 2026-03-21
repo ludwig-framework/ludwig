@@ -1,8 +1,8 @@
-# Ludwig Examples
+# Ludwig Templates
 
-Example projects demonstrating Ludwig's capabilities.
+Project templates demonstrating Ludwig's capabilities.
 
-## Web Examples
+## Web Templates
 
 ### Simple API
 ```bash
@@ -15,7 +15,13 @@ python api_example.py
 python todo_api.py
 ```
 
-## IoT Examples
+### Dashboard
+```bash
+python dashboard_example.py
+# Web dashboard with stats cards
+```
+
+## IoT Templates
 
 ### Robot Car
 ```bash
@@ -38,7 +44,25 @@ python smart_home.py
 python garden_example.py
 ```
 
-## AI Examples
+### Weather Station
+```bash
+python weather_station.py
+# Temperature, humidity, pressure, light monitoring
+```
+
+### Smart Door Lock
+```bash
+python door_lock.py
+# PIN, RFID, and remote access control
+```
+
+### LED Controller
+```bash
+python led_controller.py
+# RGB LED strip with scenes and effects
+```
+
+## AI Templates
 
 ### Voice Assistant
 ```bash

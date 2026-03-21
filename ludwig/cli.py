@@ -74,6 +74,11 @@ def create_project(name: str, template: str):
         "garden": TEMPLATE_GARDEN,
         "assistant": TEMPLATE_ASSISTANT,
         "vision": TEMPLATE_VISION,
+        "dashboard": TEMPLATE_DASHBOARD,
+        "chatbot": TEMPLATE_CHATBOT,
+        "weather-station": TEMPLATE_WEATHER_STATION,
+        "door-lock": TEMPLATE_DOOR_LOCK,
+        "led": TEMPLATE_LED,
     }
     
     code = templates.get(template, TEMPLATE_BASIC)
@@ -87,7 +92,7 @@ def create_project(name: str, template: str):
         f.write("ludwig\n")
         
         # Add template-specific requirements
-        if template in ("assistant", "vision"):
+        if template in ("assistant", "vision", "chatbot"):
             f.write("openai\n")
         if template == "vision":
             f.write("opencv-python\n")
@@ -395,6 +400,296 @@ def dog_detected(detection):
 
 if __name__ == "__main__":
     vision.run(display=True)
+'''
+
+TEMPLATE_DASHBOARD = '''"""
+Ludwig Dashboard
+"""
+
+from ludwig import App, route
+
+app = App()
+
+@route("/")
+def dashboard():
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Dashboard</title>
+        <style>
+            body { font-family: system-ui; margin: 40px; background: #f5f5f5; }
+            .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+            .card { background: white; padding: 24px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            .stat { font-size: 32px; font-weight: bold; color: #333; }
+            .label { color: #666; margin-top: 8px; }
+        </style>
+    </head>
+    <body>
+        <h1>Dashboard</h1>
+        <div class="grid">
+            <div class="card"><div class="stat">1,234</div><div class="label">Users</div></div>
+            <div class="card"><div class="stat">567</div><div class="label">Orders</div></div>
+            <div class="card"><div class="stat">$45,678</div><div class="label">Revenue</div></div>
+            <div class="card"><div class="stat">+12.5%</div><div class="label">Growth</div></div>
+        </div>
+    </body>
+    </html>
+    """
+
+if __name__ == "__main__":
+    app.run(port=8000)
+'''
+
+TEMPLATE_CHATBOT = '''"""
+Ludwig Chatbot
+"""
+
+from ludwig import App, route
+from ludwig.ai import Assistant
+
+app = App()
+assistant = Assistant(name="Bot", model="gpt-4o-mini")
+
+@route("/")
+def chat_ui():
+    return """
+    <!DOCTYPE html>
+    <html><head><title>Chatbot</title>
+    <style>
+        body { font-family: system-ui; margin: 0; height: 100vh; display: flex; flex-direction: column; }
+        #messages { flex: 1; padding: 20px; overflow-y: auto; background: #f5f5f5; }
+        .message { padding: 12px 16px; border-radius: 8px; margin: 8px 0; max-width: 70%; }
+        .user { background: #007bff; color: white; margin-left: auto; }
+        .bot { background: white; }
+        #input-area { display: flex; padding: 16px; background: white; }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
+        button { margin-left: 8px; padding: 12px 24px; background: #007bff; color: white; border: none; border-radius: 8px; }
+    </style></head>
+    <body>
+        <div id="messages"></div>
+        <div id="input-area">
+            <input type="text" id="msg" placeholder="Type..." onkeypress="if(event.key==='Enter')send()">
+            <button onclick="send()">Send</button>
+        </div>
+        <script>
+            async function send() {
+                const input = document.getElementById('msg');
+                const msg = input.value.trim(); if (!msg) return;
+                addMsg(msg, 'user'); input.value = '';
+                const res = await fetch('/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg})});
+                const data = await res.json();
+                addMsg(data.reply, 'bot');
+            }
+            function addMsg(text, type) {
+                const div = document.createElement('div');
+                div.className = 'message ' + type;
+                div.textContent = text;
+                document.getElementById('messages').appendChild(div);
+            }
+        </script>
+    </body></html>
+    """
+
+@route("/chat", methods=["POST"])
+def chat(message: str):
+    return {"reply": assistant.ask(message)}
+
+if __name__ == "__main__":
+    app.run(port=8000)
+'''
+
+TEMPLATE_WEATHER_STATION = '''"""
+Ludwig Weather Station
+"""
+
+from ludwig import App, route
+from ludwig.iot import Sensor
+
+app = App()
+
+temperature = Sensor("dht22", pin=4)
+humidity = Sensor("dht22", pin=4, reading="humidity")
+
+@route("/")
+def dashboard():
+    return """
+    <!DOCTYPE html>
+    <html><head><title>Weather Station</title>
+    <style>
+        body { font-family: system-ui; margin: 40px; background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 600px; margin: 0 auto; }
+        .card { background: white; padding: 24px; border-radius: 12px; text-align: center; }
+        .value { font-size: 48px; font-weight: bold; }
+        .label { color: #666; margin-top: 8px; }
+        h1 { color: white; text-align: center; }
+    </style></head>
+    <body>
+        <h1>Weather Station</h1>
+        <div class="grid">
+            <div class="card"><div class="value" id="temp">--</div><div class="label">Temperature (C)</div></div>
+            <div class="card"><div class="value" id="hum">--</div><div class="label">Humidity (%)</div></div>
+        </div>
+        <script>
+            async function update() {
+                const res = await fetch('/readings');
+                const data = await res.json();
+                document.getElementById('temp').textContent = data.temperature.toFixed(1);
+                document.getElementById('hum').textContent = data.humidity.toFixed(0);
+            }
+            update(); setInterval(update, 5000);
+        </script>
+    </body></html>
+    """
+
+@route("/readings")
+def readings():
+    return {"temperature": temperature.read(), "humidity": humidity.read()}
+
+if __name__ == "__main__":
+    app.run(port=8000)
+'''
+
+TEMPLATE_DOOR_LOCK = '''"""
+Ludwig Smart Door Lock
+"""
+
+from ludwig import App, route
+from ludwig.iot import Relay
+
+app = App()
+lock = Relay(pin=11)
+PIN = "1234"
+
+@route("/")
+def ui():
+    return """
+    <!DOCTYPE html>
+    <html><head><title>Smart Lock</title>
+    <style>
+        body { font-family: system-ui; margin: 40px; background: #1a1a2e; color: white; }
+        .container { max-width: 300px; margin: 0 auto; text-align: center; }
+        .status { font-size: 24px; padding: 24px; border-radius: 12px; margin-bottom: 24px; }
+        .locked { background: #e74c3c; }
+        .unlocked { background: #2ecc71; }
+        input { padding: 16px; font-size: 20px; width: 100%; margin-bottom: 16px; border-radius: 8px; border: none; }
+        button { padding: 16px 32px; font-size: 18px; border: none; border-radius: 8px; cursor: pointer; margin: 8px; }
+        .unlock { background: #2ecc71; color: white; }
+        .lock { background: #e74c3c; color: white; }
+    </style></head>
+    <body>
+        <div class="container">
+            <h1>Smart Lock</h1>
+            <div class="status" id="status">Checking...</div>
+            <input type="password" id="pin" placeholder="Enter PIN" maxlength="4">
+            <button class="unlock" onclick="unlock()">Unlock</button>
+            <button class="lock" onclick="doLock()">Lock</button>
+        </div>
+        <script>
+            async function unlock() {
+                const pin = document.getElementById('pin').value;
+                const res = await fetch('/unlock', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({pin})});
+                const data = await res.json();
+                alert(data.message);
+                updateStatus();
+            }
+            async function doLock() { await fetch('/lock', {method:'POST'}); updateStatus(); }
+            async function updateStatus() {
+                const res = await fetch('/status');
+                const data = await res.json();
+                const el = document.getElementById('status');
+                el.textContent = data.locked ? 'LOCKED' : 'UNLOCKED';
+                el.className = 'status ' + (data.locked ? 'locked' : 'unlocked');
+            }
+            updateStatus();
+        </script>
+    </body></html>
+    """
+
+@route("/status")
+def status():
+    return {"locked": not lock.is_on()}
+
+@route("/unlock", methods=["POST"])
+def unlock(pin: str):
+    if pin == PIN:
+        lock.on()
+        return {"success": True, "message": "Unlocked"}
+    return {"success": False, "message": "Invalid PIN"}
+
+@route("/lock", methods=["POST"])
+def do_lock():
+    lock.off()
+    return {"success": True}
+
+if __name__ == "__main__":
+    app.run(port=8000)
+'''
+
+TEMPLATE_LED = '''"""
+Ludwig LED Controller
+"""
+
+from ludwig import App, route
+from ludwig.iot import Light
+
+app = App()
+led = Light(pin=18, type="ws2812b", count=60)
+state = {"r": 0, "g": 0, "b": 0, "brightness": 100}
+
+@route("/")
+def ui():
+    return """
+    <!DOCTYPE html>
+    <html><head><title>LED Controller</title>
+    <style>
+        body { font-family: system-ui; margin: 40px; background: #111; color: white; }
+        .container { max-width: 400px; margin: 0 auto; }
+        .preview { height: 60px; border-radius: 8px; margin-bottom: 24px; }
+        input[type="range"] { width: 100%; margin: 8px 0; }
+        .scenes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .scene { padding: 12px; border: none; border-radius: 8px; cursor: pointer; }
+    </style></head>
+    <body>
+        <div class="container">
+            <h1>LED Controller</h1>
+            <div class="preview" id="preview"></div>
+            <label>R: <input type="range" id="r" max="255" value="0" oninput="update()"></label>
+            <label>G: <input type="range" id="g" max="255" value="0" oninput="update()"></label>
+            <label>B: <input type="range" id="b" max="255" value="0" oninput="update()"></label>
+            <h3>Scenes</h3>
+            <div class="scenes">
+                <button class="scene" style="background:#333" onclick="set(0,0,0)">Off</button>
+                <button class="scene" style="background:#ffb464" onclick="set(255,180,100)">Warm</button>
+                <button class="scene" style="background:#f00" onclick="set(255,0,0)">Red</button>
+                <button class="scene" style="background:#0f0" onclick="set(0,255,0)">Green</button>
+                <button class="scene" style="background:#00f" onclick="set(0,0,255)">Blue</button>
+                <button class="scene" style="background:#9600ff" onclick="set(150,0,255)">Purple</button>
+            </div>
+        </div>
+        <script>
+            function update() {
+                const r=document.getElementById('r').value, g=document.getElementById('g').value, b=document.getElementById('b').value;
+                document.getElementById('preview').style.background = `rgb(${r},${g},${b})`;
+                fetch('/set', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({r:+r,g:+g,b:+b})});
+            }
+            function set(r,g,b) {
+                document.getElementById('r').value=r; document.getElementById('g').value=g; document.getElementById('b').value=b;
+                update();
+            }
+        </script>
+    </body></html>
+    """
+
+@route("/set", methods=["POST"])
+def set_color(r: int, g: int, b: int):
+    global state
+    state = {"r": r, "g": g, "b": b, "brightness": 100}
+    led.set_color(r, g, b)
+    return {"success": True}
+
+if __name__ == "__main__":
+    app.run(port=8000)
 '''
 
 
