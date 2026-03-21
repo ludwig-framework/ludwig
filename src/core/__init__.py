@@ -1,3 +1,0 @@
-"""
-Ludwig Core Language Implementation
-"""

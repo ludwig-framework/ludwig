@@ -1,8 +1,0 @@
-# Ludwig Demo - Basic Math Operations
-# Testing the Ludwig interpreter
-
-let x = 10
-let y = 5
-let sum = x + y
-let product = x * y
-let is_greater = x > y

@@ -13,71 +13,81 @@ Include:
 
 ## Response Timeline
 
-- 24 hours: Acknowledge receipt
-- 72 hours: Initial assessment
-- 7 days: Fix timeline communicated
-| **Within 72 hours** | Initial assessment and severity classification |
-| **Within 1 week** | Detailed investigation and impact assessment |
-| **Within 2 weeks** | Fix development and testing |
-| **Within 1 month** | Public disclosure (coordinated with reporter) |
-
-> **Note**: Timelines may vary based on complexity and severity of the vulnerability.
+| Timeline | Action |
+|----------|--------|
+| 24 hours | Acknowledge receipt |
+| 72 hours | Initial assessment |
+| 1 week | Fix timeline communicated |
+| 2 weeks | Fix development |
+| 1 month | Coordinated disclosure |
 
 ## Security Best Practices
 
-### For Ludwig Users
+### Web Applications
 
-When using Ludwig in your projects, follow these security best practices:
-
-#### 🌐 Web Applications
 ```python
-# Always validate user input
-from validation import validate
+from ludwig import App
 
-user_data = request.get_data()
-rules = {
-    'name': ['required', 'string', 'max:100'],
-    'email': ['required', 'email'],
-    'age': ['integer', 'between:1,120']
-}
-validation_result = validate(user_data, rules)
+app = App()
+
+@app.post("/login")
+def login(req):
+    # Validate input
+    email = req.json.get("email", "").strip()
+    password = req.json.get("password", "")
+    
+    if not email or not password:
+        return {"error": "Invalid input"}, 400
+    
+    # Use secure password comparison
+    # Never log passwords
+    pass
 ```
 
-#### 🖥️ Desktop Applications
+### IoT Systems
+
 ```python
-# Sanitize file paths
-import os
-def safe_file_access(filename):
-    # Prevent directory traversal
-    safe_path = os.path.normpath(filename)
-    if '..' in safe_path or safe_path.startswith('/'):
-        raise SecurityError("Invalid file path")
-    return safe_path
+from ludwig.iot import Alarm
+
+alarm = Alarm()
+
+# Use secure notifications
+alarm.configure_notifications(
+    sms_provider="twilio",
+    encryption=True,
+)
+
+# Validate sensor readings
+@alarm.on_triggered
+def alert(zone, sensor):
+    if sensor.confidence > 0.8:  # High confidence only
+        alarm.send_alert(zone)
 ```
 
-#### 🔌 Embedded Systems
-```python
-# Secure communication
-device.add_service("wifi", Embedded.WiFiService(
-    encryption="WPA3",
-    certificate_validation=True
-))
+### AI Integration
 
-# Validate sensor data
-def validate_sensor_reading(value):
-    if not isinstance(value, (int, float)):
-        raise ValueError("Invalid sensor data type")
-    if value < -50 or value > 200:  # Reasonable temperature range
-        raise ValueError("Sensor reading out of range")
-    return value
+```python
+from ludwig.ai import Assistant
+
+# Never log or store API keys in code
+# Use environment variables
+assistant = Assistant(
+    api_key=None,  # Uses OPENAI_API_KEY env var
+)
+
+# Sanitize user input before AI processing
+@assistant.on_command
+def handle(command):
+    safe_command = sanitize(command)
+    response = assistant.think(safe_command)
 ```
 
 ### For Contributors
 
-When contributing to Ludwig:
-
-- **Never commit secrets** (API keys, passwords, certificates)
-- **Use secure coding practices** (input validation, output encoding)
+- Never commit secrets (API keys, passwords)
+- Use environment variables for configuration
+- Validate all user input
+- Use secure defaults
 - **Test for common vulnerabilities** (injection, XSS, path traversal)
 - **Follow the principle of least privilege**
 - **Keep dependencies updated**

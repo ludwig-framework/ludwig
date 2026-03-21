@@ -1,6 +1,0 @@
-# User Model
-# Generated on 2025-06-18 22:02:32
-
-let User = create model do
-    let table_name = "users"
-    # Add your model attributes here

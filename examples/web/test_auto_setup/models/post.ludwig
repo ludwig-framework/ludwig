@@ -1,6 +1,0 @@
-# Post Model
-# Generated on 2025-06-18 22:02:32
-
-let Post = create model do
-    let table_name = "posts"
-    # Add your model attributes here

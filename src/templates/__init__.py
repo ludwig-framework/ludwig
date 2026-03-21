@@ -1,3 +1,0 @@
-"""
-Ludwig Project Templates
-"""

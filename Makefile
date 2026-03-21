@@ -1,43 +1,56 @@
-# Ludwig Programming Language Makefile
+# Ludwig Framework Makefile
 
-.PHONY: help install install-dev test lint format clean run-tests
+.PHONY: help install install-dev test lint format clean build
 
 help: ## Show this help message
-	@echo "Ludwig Programming Language - Available Commands:"
+	@echo "Ludwig Framework - Available Commands:"
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
-install: ## Install Ludwig in development mode
+install: ## Install Ludwig
 	pip install -e .
 
 install-dev: ## Install with development dependencies
-	pip install -e .
-	pip install -r requirements-dev.txt
+	pip install -e ".[dev]"
+
+install-all: ## Install with all optional dependencies
+	pip install -e ".[all,dev]"
 
 test: ## Run tests
-	python -m pytest tests/ -v
+	pytest tests/ -v
+
+test-cov: ## Run tests with coverage
+	pytest tests/ -v --cov=ludwig --cov-report=html
 
 lint: ## Run linting
-	flake8 src/
-	mypy src/
+	ruff check ludwig/
 
 format: ## Format code
-	black src/
-	black bin/
+	black ludwig/
+	ruff check ludwig/ --fix
+
+typecheck: ## Run type checking
+	mypy ludwig/ --ignore-missing-imports
 
 clean: ## Clean build artifacts
 	rm -rf build/
 	rm -rf dist/
 	rm -rf *.egg-info/
+	rm -rf .pytest_cache/
+	rm -rf .mypy_cache/
+	rm -rf .ruff_cache/
+	rm -rf htmlcov/
 	find . -type d -name __pycache__ -delete
 	find . -type f -name "*.pyc" -delete
 
 build: ## Build distribution packages
-	python setup.py sdist bdist_wheel
+	python -m build
 
-# Quick commands for common tasks
-shell: ## Start Ludwig interactive shell
-	./bin/ludwig-shell
+publish-test: ## Publish to TestPyPI
+	python -m twine upload --repository testpypi dist/*
+
+publish: ## Publish to PyPI
+	python -m twine upload dist/*
 
 create-web: ## Create a sample web project
 	./bin/ludwig-setup sample_web web

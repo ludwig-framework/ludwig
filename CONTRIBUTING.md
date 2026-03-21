@@ -1,63 +1,87 @@
 # Contributing to Ludwig
 
-Thanks for your interest in contributing.
+Thanks for your interest in contributing to Ludwig!
 
 ## Development Setup
 
 ```bash
-git clone https://github.com/NanaBright/ludwig.git
+git clone https://github.com/ludwig-framework/ludwig.git
 cd ludwig
-pip install -r requirements-dev.txt
+pip install -e ".[dev]"
 ```
 
 ## Running Tests
 
 ```bash
 pytest
+pytest --cov=ludwig  # with coverage
 ```
 
 ## Code Style
 
-- Use Black for formatting
-- Follow PEP 8 guidelines
-- Add docstrings for public functions
-
 ```bash
-black .
-flake8
+black ludwig/
+ruff check ludwig/
+mypy ludwig/
+```
+
+## Project Structure
+
+```
+ludwig/
+├── ludwig/
+│   ├── __init__.py      # Main exports
+│   ├── core.py          # App, Config
+│   ├── web.py           # HTTP server
+│   ├── db.py            # Database, Model
+│   ├── cli.py           # CLI commands
+│   ├── iot/             # IoT modules
+│   │   ├── pin.py       # GPIO abstraction
+│   │   ├── sensor.py    # Sensors
+│   │   ├── actuators.py # Motors, lights
+│   │   ├── robot.py     # Robot cars/arms
+│   │   ├── alarm.py     # Security systems
+│   │   ├── camera.py    # Camera integration
+│   │   ├── home.py      # Smart home
+│   │   └── garden.py    # Garden automation
+│   └── ai/              # AI modules
+│       ├── assistant.py # Voice assistant
+│       ├── vision.py    # Computer vision
+│       └── automator.py # NL automation
+├── docs/                # Documentation
+├── tests/               # Test suite
+└── examples/            # Example projects
 ```
 
 ## Pull Requests
 
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch: `git checkout -b feature/my-feature`
 3. Make your changes
-4. Run tests
-5. Submit a PR
+4. Add tests for new functionality
+5. Run tests and linting
+6. Submit a PR
+
+## What to Contribute
+
+- **Bug fixes** - Always welcome
+- **Documentation** - Examples, tutorials, typo fixes
+- **IoT templates** - New sensors, actuators, devices
+- **AI features** - New models, integrations
+- **Platform support** - ESP32, Arduino improvements
 
 ## Reporting Issues
 
 Include:
-- Ludwig version
+- Ludwig version (`ludwig version`)
 - Python version
+- Platform (Raspberry Pi, macOS, etc.)
 - Steps to reproduce
 - Expected vs actual behavior
 
 ## Security
 
 See [SECURITY.md](SECURITY.md) for vulnerability reporting.
-
-### Core Components
-```
-ludwig/
-├── src/
-│   ├── frameworks/           # Platform frameworks
-│   │   ├── web_framework.py     # Laravel-inspired web
-│   │   ├── desktop_framework.py # .NET-inspired desktop
-│   │   └── embedded_framework.py # Arduino-inspired IoT
-│   ├── cli/                  # Command-line tools
-│   │   └── artisan.py           # Code generation CLI
-│   ├── core/                 # Language implementation
 │   │   ├── lexer.py, parse.py, interpreter.py
 │   │   └── data.py, tokens.py
 │   └── utils/                # Shared utilities

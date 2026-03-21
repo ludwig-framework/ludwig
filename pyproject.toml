@@ -1,0 +1,119 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ludwig"
+version = "2.0.0"
+description = "Simple Python for Web, IoT, and AI"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Ludwig Framework", email = "hello@ludwig.dev" }
+]
+keywords = [
+    "framework",
+    "web",
+    "iot",
+    "ai",
+    "raspberry-pi",
+    "esp32",
+    "arduino",
+    "robot",
+    "smart-home",
+    "voice-assistant",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Home Automation",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+
+# Core has no dependencies - pure Python
+dependencies = []
+
+[project.optional-dependencies]
+# Install for AI features
+ai = [
+    "openai>=1.0",
+    "SpeechRecognition>=3.10",
+]
+
+# Install for computer vision
+vision = [
+    "opencv-python>=4.8",
+    "ultralytics>=8.0",
+]
+
+# Install for database (PostgreSQL)
+postgres = [
+    "psycopg2-binary>=2.9",
+]
+
+# Install for Raspberry Pi
+pi = [
+    "RPi.GPIO>=0.7",
+    "picamera2>=0.3",
+]
+
+# All extras
+all = [
+    "openai>=1.0",
+    "SpeechRecognition>=3.10",
+    "opencv-python>=4.8",
+    "ultralytics>=8.0",
+    "psycopg2-binary>=2.9",
+]
+
+# Development
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "ruff>=0.1",
+    "mypy>=1.0",
+]
+
+[project.scripts]
+ludwig = "ludwig.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/ludwig-framework/ludwig"
+Documentation = "https://ludwig.dev/docs"
+Repository = "https://github.com/ludwig-framework/ludwig"
+Issues = "https://github.com/ludwig-framework/ludwig/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ludwig"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "W", "I", "UP", "B", "C4"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+addopts = "-v --tb=short"

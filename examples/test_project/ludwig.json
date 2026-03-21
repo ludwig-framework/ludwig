@@ -1,8 +1,0 @@
-{
-  "name": "test_project",
-  "version": "1.0.0",
-  "description": "A Ludwig project named test_project",
-  "main": "main.ludwig",
-  "created": "2025-06-18T20:56:17.588634",
-  "ludwig_version": "0.1.0-alpha"
-}

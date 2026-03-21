@@ -1,9 +1,0 @@
-# SampleForm - Example desktop form
-# Generated for demonstration
-
-let SampleForm = create form do
-    let title = "Sample Form"
-    let width = 400
-    let height = 300
-    
-    # Form controls would be defined here

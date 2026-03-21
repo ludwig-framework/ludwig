@@ -1,6 +1,0 @@
-# Ludwig Framework - No external dependencies required for core functionality
-# The framework is built with pure Python
-
-# Optional development dependencies
-# pytest>=7.0
-# black>=23.0
