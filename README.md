@@ -44,8 +44,23 @@ app.run()
 
 ## Quick Start
 
+### Install from PyPI
+
 ```bash
 pip install ludwig
+```
+
+### Or Clone from GitHub
+
+```bash
+git clone https://github.com/ludwig-framework/ludwig.git
+cd ludwig
+pip install -e .
+```
+
+### Create a Project
+
+```bash
 ludwig new my-project --template api
 cd my-project
 python app.py
@@ -64,6 +79,11 @@ python app.py
 | `garden` | Garden watering system |
 | `assistant` | Voice assistant |
 | `vision` | Computer vision |
+| `dashboard` | Web dashboard with stats |
+| `chatbot` | AI chatbot interface |
+| `weather-station` | IoT weather monitoring |
+| `door-lock` | Smart door lock system |
+| `led` | RGB LED strip controller |
 
 ---
 

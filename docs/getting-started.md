@@ -4,8 +4,18 @@ Ludwig is a Python framework for building Web APIs, IoT systems, and AI applicat
 
 ## Installation
 
+### From PyPI (Recommended)
+
 ```bash
 pip install ludwig
+```
+
+### From GitHub (Development)
+
+```bash
+git clone https://github.com/ludwig-framework/ludwig.git
+cd ludwig
+pip install -e .
 ```
 
 ### Optional Dependencies

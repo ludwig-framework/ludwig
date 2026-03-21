@@ -30,7 +30,9 @@ Examples:
     new_parser.add_argument("name", help="Project name")
     new_parser.add_argument("--template", "-t", default="basic",
                            choices=["basic", "api", "web", "robot", "alarm", 
-                                   "smart-home", "garden", "assistant", "vision"],
+                                   "smart-home", "garden", "assistant", "vision",
+                                   "dashboard", "chatbot", "weather-station", 
+                                   "door-lock", "led"],
                            help="Project template")
     
     # dev command
@@ -406,12 +408,12 @@ TEMPLATE_DASHBOARD = '''"""
 Ludwig Dashboard
 """
 
-from ludwig import App, route
+from ludwig import App
 
 app = App()
 
-@route("/")
-def dashboard():
+@app.route("/")
+def dashboard(req):
     return """
     <!DOCTYPE html>
     <html>
@@ -445,14 +447,14 @@ TEMPLATE_CHATBOT = '''"""
 Ludwig Chatbot
 """
 
-from ludwig import App, route
+from ludwig import App
 from ludwig.ai import Assistant
 
 app = App()
 assistant = Assistant(name="Bot", model="gpt-4o-mini")
 
-@route("/")
-def chat_ui():
+@app.route("/")
+def chat_ui(req):
     return """
     <!DOCTYPE html>
     <html><head><title>Chatbot</title>
@@ -491,9 +493,9 @@ def chat_ui():
     </body></html>
     """
 
-@route("/chat", methods=["POST"])
-def chat(message: str):
-    return {"reply": assistant.ask(message)}
+@app.route("/chat", methods=["POST"])
+def chat(req):
+    return {"reply": assistant.ask(req.json.get("message", ""))}
 
 if __name__ == "__main__":
     app.run(port=8000)
@@ -503,7 +505,7 @@ TEMPLATE_WEATHER_STATION = '''"""
 Ludwig Weather Station
 """
 
-from ludwig import App, route
+from ludwig import App
 from ludwig.iot import Sensor
 
 app = App()
@@ -511,8 +513,8 @@ app = App()
 temperature = Sensor("dht22", pin=4)
 humidity = Sensor("dht22", pin=4, reading="humidity")
 
-@route("/")
-def dashboard():
+@app.route("/")
+def dashboard(req):
     return """
     <!DOCTYPE html>
     <html><head><title>Weather Station</title>
@@ -542,8 +544,8 @@ def dashboard():
     </body></html>
     """
 
-@route("/readings")
-def readings():
+@app.route("/readings")
+def readings(req):
     return {"temperature": temperature.read(), "humidity": humidity.read()}
 
 if __name__ == "__main__":
@@ -554,15 +556,15 @@ TEMPLATE_DOOR_LOCK = '''"""
 Ludwig Smart Door Lock
 """
 
-from ludwig import App, route
+from ludwig import App
 from ludwig.iot import Relay
 
 app = App()
 lock = Relay(pin=11)
 PIN = "1234"
 
-@route("/")
-def ui():
+@app.route("/")
+def ui(req):
     return """
     <!DOCTYPE html>
     <html><head><title>Smart Lock</title>
@@ -606,19 +608,20 @@ def ui():
     </body></html>
     """
 
-@route("/status")
-def status():
+@app.route("/status")
+def status(req):
     return {"locked": not lock.is_on()}
 
-@route("/unlock", methods=["POST"])
-def unlock(pin: str):
+@app.route("/unlock", methods=["POST"])
+def unlock(req):
+    pin = req.json.get("pin", "")
     if pin == PIN:
         lock.on()
         return {"success": True, "message": "Unlocked"}
     return {"success": False, "message": "Invalid PIN"}
 
-@route("/lock", methods=["POST"])
-def do_lock():
+@app.route("/lock", methods=["POST"])
+def do_lock(req):
     lock.off()
     return {"success": True}
 
@@ -630,15 +633,15 @@ TEMPLATE_LED = '''"""
 Ludwig LED Controller
 """
 
-from ludwig import App, route
+from ludwig import App
 from ludwig.iot import Light
 
 app = App()
 led = Light(pin=18, type="ws2812b", count=60)
 state = {"r": 0, "g": 0, "b": 0, "brightness": 100}
 
-@route("/")
-def ui():
+@app.route("/")
+def ui(req):
     return """
     <!DOCTYPE html>
     <html><head><title>LED Controller</title>
@@ -681,9 +684,11 @@ def ui():
     </body></html>
     """
 
-@route("/set", methods=["POST"])
-def set_color(r: int, g: int, b: int):
+@app.route("/set", methods=["POST"])
+def set_color(req):
     global state
+    data = req.json
+    r, g, b = data.get("r", 0), data.get("g", 0), data.get("b", 0)
     state = {"r": r, "g": g, "b": b, "brightness": 100}
     led.set_color(r, g, b)
     return {"success": True}
