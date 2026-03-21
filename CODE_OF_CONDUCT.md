@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/NanaBright/ludwig/main/assets/logo.png" alt="Ludwig Logo" width="120"/>
-</p>
-
-# Contributor Covenant Code of Conduct
+# Code of Conduct
 
 ## Our Pledge
 

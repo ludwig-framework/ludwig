@@ -1,55 +1,42 @@
 ---
 name: Bug Report
-about: Report a bug to help us improve Ludwig
+about: Report a bug in Ludwig
 title: '[BUG] '
 labels: 'bug'
 assignees: ''
 
 ---
 
-## 🐛 Bug Description
-A clear and concise description of what the bug is.
+## Description
+A clear description of the bug.
 
-## 🔄 Steps to Reproduce
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## Steps to Reproduce
+1. 
+2. 
+3. 
 
-## ✅ Expected Behavior
-A clear and concise description of what you expected to happen.
+## Expected Behavior
+What you expected to happen.
 
-## ❌ Actual Behavior
-A clear and concise description of what actually happened.
+## Actual Behavior
+What actually happened.
 
-## 📸 Screenshots
-If applicable, add screenshots to help explain your problem.
+## Environment
+- OS: 
+- Python: 
+- Ludwig: 
+- Model provider: (OpenAI/Anthropic/other)
 
-## 💻 Environment
-**Platform** (check all that apply):
-- [ ] Web Framework
-- [ ] Desktop Framework  
-- [ ] Embedded Framework
-- [ ] CLI Tools
+## Code Example
+```python
+# Minimal code to reproduce the issue
+```
 
-**System Information:**
-- OS: [e.g. macOS 13.4, Windows 11, Ubuntu 22.04]
-- Python Version: [e.g. 3.9.7]
-- Ludwig Version: [e.g. 1.2.3]
+## Error Output
+```
+# Paste error messages here
+```
 
-**Hardware** (for embedded issues):
-- Device: [e.g. Raspberry Pi 4, Arduino Uno]
-- Sensors: [e.g. DS18B20, HC-SR04]
-
-## 📝 Additional Context
-Add any other context about the problem here.
-
-## 🔧 Possible Solution
-If you have ideas on how to fix this, please share them here.
-
-## 📋 Checklist
-- [ ] I have read the [Code of Conduct](../../CODE_OF_CONDUCT.md)
-- [ ] I have searched existing issues to avoid duplicates
-- [ ] This is a bug report (not a feature request or question)
-- [ ] I have provided all required information above
+## Checklist
+- [ ] I searched existing issues
+- [ ] I provided a minimal reproduction

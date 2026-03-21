@@ -1,33 +1,16 @@
 # Ludwig Development Dependencies
 
-# Core testing
+# Testing
 pytest>=7.0.0
 pytest-cov>=4.0.0
-coverage>=6.0.0
 
-# Code formatting and linting
-black>=22.0.0
-flake8>=5.0.0
+# Code quality
+black>=23.0.0
+flake8>=6.0.0
 mypy>=1.0.0
-isort>=5.10.0
 
-# Security
-bandit>=1.7.0
-
-# Development utilities
-pre-commit>=2.20.0
-watchdog>=2.1.0
-jupyter>=1.0.0
-ipython>=8.0.0
-
-# Documentation
-sphinx>=5.0.0
-mkdocs>=1.4.0
-mkdocs-material>=8.0.0
-
-# Optional: Advanced testing
-selenium>=4.0.0
-requests>=2.28.0
+# Pre-commit
+pre-commit>=3.0.0
 
 # Optional: Embedded development
 pyserial>=3.5

@@ -1,103 +1,93 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/NanaBright/ludwig/main/assets/logo.png" alt="Ludwig Logo" width="120"/>
-</p>
+# Getting Started
 
-# Getting Started with Ludwig 🚀
-
-Welcome to Ludwig! This guide will help you get up and running quickly with our modern development platform for Web, Desktop, and Embedded systems.
-
-## 📋 Table of Contents
-
-1. [Prerequisites](#prerequisites)
-2. [Installation](#installation)
-3. [Your First Ludwig Project](#your-first-ludwig-project)
-4. [Web Development](#web-development)
-5. [Desktop Applications](#desktop-applications)
-6. [Embedded/IoT Systems](#embeddediot-systems)
-7. [CLI Commands Reference](#cli-commands-reference)
-8. [Next Steps](#next-steps)
-
----
+This guide covers installation and creating your first Ludwig project.
 
 ## Prerequisites
 
-Before getting started with Ludwig, make sure you have:
-
-- **Python 3.9+** installed on your system
-- **Git** for version control
-- A code editor (VS Code recommended)
-- Terminal/Command prompt access
-
-### System Requirements
-
-| Platform | Requirements |
-|----------|-------------|
-| **Windows** | Windows 10+ with Python 3.9+ |
-| **macOS** | macOS 10.15+ with Python 3.9+ |
-| **Linux** | Ubuntu 20.04+ or equivalent with Python 3.9+ |
-
----
+- Python 3.9 or higher
+- Git
 
 ## Installation
 
-### Option 1: Clone from GitHub (Recommended)
-
 ```bash
-# Clone the repository
 git clone https://github.com/NanaBright/ludwig.git
 cd ludwig
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Verify installation
-python artisan.py version
-```
-
-### Option 2: Quick Download
-
-```bash
-# Download and extract
-wget https://github.com/NanaBright/ludwig/archive/main.zip
-unzip main.zip
-cd ludwig-main
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-### Verify Installation
+Verify installation:
 
 ```bash
-# Check Ludwig CLI
 python artisan.py help
-
-# Test framework imports
-python -c "import ludwig_collections; print('✅ Ludwig ready!')"
 ```
 
----
-
-## Your First Ludwig Project
-
-Let's create your first Ludwig project! Choose your platform:
-
-### 🌐 Web Project
+## Create a Web Project
 
 ```bash
-# Create a new web project
-python ludwig_setup.py my_blog web
+python artisan.py new my_blog web
 cd my_blog
-
-# Start development
 python artisan.py dev
 ```
 
-### 🖥️ Desktop Project
+This creates a complete web application with:
+- User authentication
+- Database with ORM
+- REST API endpoints
+- Modern UI with TailwindCSS
+
+## Create a Desktop App
 
 ```bash
-# Create a desktop application
-python ludwig_setup.py my_app desktop
+python artisan.py make:desktop Calculator
+python calculator_app.ludwig
+```
+
+## Create an Embedded Project
+
+```bash
+python artisan.py make:embedded TempSensor
+```
+
+## CLI Commands
+
+```bash
+# Project creation
+python artisan.py new <name> <type>    # Create new project (web, desktop, cli)
+
+# Code generation
+python artisan.py make:api <name>      # Generate API with controller
+python artisan.py make:auth            # Add authentication
+python artisan.py make:desktop <name>  # Generate desktop app
+python artisan.py make:embedded <name> # Generate embedded template
+
+# Development
+python artisan.py dev                  # Start dev server
+python artisan.py serve                # Start interactive REPL
+```
+
+## Project Structure
+
+A typical web project:
+
+```
+my_blog/
+├── main.ludwig          # Entry point
+├── config.json          # Configuration
+├── controllers/
+│   └── HomeController.py
+├── models/
+│   └── User.py
+├── views/
+│   └── index.html
+└── static/
+    └── css/
+```
+
+## Next Steps
+
+- [Web Development Guide](WEB_GUIDE.md)
+- [Desktop Development Guide](DESKTOP_GUIDE.md)
+- [Embedded Systems Guide](EMBEDDED_GUIDE.md)
 cd my_app
 
 # Run the application

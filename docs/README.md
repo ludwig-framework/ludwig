@@ -1,53 +1,49 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/NanaBright/ludwig/main/assets/logo.png" alt="Ludwig Logo" width="120"/>
-</p>
+# Ludwig Documentation
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Platform Support](https://img.shields.io/badgeplatform-web%20%7C%20desktop%20%7C%20embedded-blue)
+Ludwig is a Python web framework inspired by Laravel's elegant syntax and developer experience.
 
-# Ludwig Development Platform
+## Guides
 
-Ludwig is a **complete modern development platform** that combines Python-inspired syntax with powerful frameworks for building web applications, desktop applications, and embedded systems. Ludwig is designed to be simple, elegant, and developer-friendly.
-
-## 🚀 Quick Start
-
-**👉 [Getting Started Guide](GETTING_STARTED.md) - Complete setup and tutorial**
-
-## ✨ Platform Capabilities
-
-### 🌐 Web Development (Laravel-inspired)
-- **Full-stack web applications** with authentication, database, and modern UI
-- **RESTful API generation** with one command
-- **JWT authentication** and middleware system
-- **Database ORM** with Laravel Eloquent-style syntax
-- **Modern UI components** (TailwindCSS + shadcn/ui)
-
-### 🖥️ Desktop Development (C#/.NET-inspired)
-- **Cross-platform desktop applications** for Windows, Mac, and Linux
-- **Modern GUI framework** with layout management
-- **Built-in services** for file, database, HTTP, and system operations
-- **Event-driven architecture** with clean event handling
-
-### 🔌 Embedded Systems & IoT (Arduino/RPi-inspired)
-- **Embedded applications** for Arduino, Raspberry Pi, ESP32, and IoT devices
-- **Hardware abstraction** for sensors, actuators, and displays
-- **POS systems**, **QR kiosks**, **inventory scanners**
-- **Smart home automation** and **robotics systems**
-- **Connectivity services** (WiFi, Bluetooth, cloud integration)
-
-### 🛠️ Developer Tools
-- **Artisan CLI** with Laravel-style code generation
-- **One-command project setup** for all platform types
-- **Interactive REPL** for testing and development
-- **Comprehensive documentation** and examples
+- [Getting Started](GETTING_STARTED.md) - Installation and first project
+- [Web Development](WEB_GUIDE.md) - Building web applications
+- [Desktop Development](DESKTOP_GUIDE.md) - Building desktop apps
+- [Embedded Systems](EMBEDDED_GUIDE.md) - IoT and embedded development
 
 ## Quick Start
 
-### Option 1: Create a New Project (Recommended)
-
-**Web Application:**
 ```bash
-# Create a complete web app with authentication and database
+git clone https://github.com/NanaBright/ludwig.git
+cd ludwig
+pip install -r requirements.txt
+
+# Create a web project
+python artisan.py new my_app web
+cd my_app
+python artisan.py dev
+```
+
+## Features
+
+- Pure Python - no Flask or Django required
+- Laravel-style Artisan CLI
+- Built-in ORM with Eloquent syntax
+- JWT authentication
+- Project templates for web, desktop, and embedded
+- TailwindCSS integration
+
+## Project Structure
+
+```
+ludwig/
+├── artisan.py           # CLI tool
+├── web_framework.py     # Web framework
+├── auth.py              # Authentication
+├── src/
+│   ├── frameworks/
+│   └── templates/
+├── examples/
+└── docs/
+```
 python ludwig_setup.py my_blog web
 
 # Navigate to project

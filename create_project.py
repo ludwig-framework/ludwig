@@ -90,10 +90,10 @@ def get_timestamp():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def main():
-    print("🚀 Starting {project_name.title()} application...")
-    print("📦 Using Ludwig Native Web Framework (no external dependencies)")
-    print("💫 Application running at http://localhost:8000")
-    print("🔗 API endpoint: http://localhost:8000/api/status")
+    print("Starting {project_name.title()} application...")
+    print("Using Ludwig Native Web Framework (no external dependencies)")
+    print("Application running at http://localhost:8000")
+    print("API endpoint: http://localhost:8000/api/status")
     app.run(host="localhost", port=8000, debug=True)
 
 if __name__ == "__main__":
@@ -277,10 +277,10 @@ class HomeController:
                     
                     <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">Key Features:</h3>
                     <ul class="space-y-2">
-                        <li>🌐 <strong>Web Development</strong> - Laravel-inspired framework with TailwindCSS</li>
-                        <li>🖥️ <strong>Desktop Applications</strong> - Cross-platform GUI development</li>
-                        <li>🔌 <strong>Embedded/IoT</strong> - Hardware abstraction for sensors and devices</li>
-                        <li>🛠️ <strong>Powerful CLI</strong> - Artisan-style code generation tools</li>
+                        <li><strong>Web Development</strong> - Laravel-inspired framework with TailwindCSS</li>
+                        <li><strong>Desktop Applications</strong> - Cross-platform GUI development</li>
+                        <li><strong>Embedded/IoT</strong> - Hardware abstraction for sensors and devices</li>
+                        <li><strong>Powerful CLI</strong> - Artisan-style code generation tools</li>
                     </ul>
                     
                     <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">This Project:</h3>
@@ -353,7 +353,7 @@ class HomeController:
 
 A Ludwig web application with modern design and TailwindCSS styling.
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Navigate to project directory
@@ -368,7 +368,7 @@ python ../artisan.py dev
 
 Your application will be available at: http://localhost:8000
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 {project_name}/
@@ -388,7 +388,7 @@ Your application will be available at: http://localhost:8000
 └── tests/                   # Test files
 ```
 
-## 🛠️ Available Commands
+## Available Commands
 
 ```bash
 # Generate new components
@@ -401,15 +401,15 @@ python ../artisan.py dev        # Start dev server
 python ../artisan.py build      # Build for production
 ```
 
-## 🎨 Features
+## Features
 
-- ✅ **Modern Design** - TailwindCSS styling with responsive layout
-- ✅ **Component Architecture** - Modular and reusable components
-- ✅ **MVC Pattern** - Clean separation of concerns
-- ✅ **Static Assets** - CSS, JS, and image handling
-- ✅ **Hot Reload** - Development server with live updates
+- **Modern Design** - TailwindCSS styling with responsive layout
+- **Component Architecture** - Modular and reusable components
+- **MVC Pattern** - Clean separation of concerns
+- **Static Assets** - CSS, JS, and image handling
+- **Hot Reload** - Development server with live updates
 
-## 📚 Learn More
+## Learn More
 
 - [Ludwig Documentation](../docs/README.md)
 - [Web Development Guide](../docs/COMPLETE_GUIDE.md)
@@ -426,18 +426,17 @@ python ../artisan.py build      # Build for production
     
     # Success message
     print(f"""
-🎉 Successfully created Ludwig web project: {project_name.title()}
+Successfully created Ludwig web project: {project_name.title()}
 
-📁 Project created in: ./{project_name}/
-🌐 Type: Web Application
-🎨 Styling: TailwindCSS + Modern Design
+Project created in: ./{project_name}/
+Type: Web Application
+Styling: TailwindCSS + Modern Design
 
-🚀 Next Steps:
+Next Steps:
    1. cd {project_name}
    2. python main.ludwig
    3. Open http://localhost:8000 in your browser
 
-✨ Happy coding with Ludwig!
 """)
     
     return True

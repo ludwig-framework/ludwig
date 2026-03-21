@@ -1,53 +1,18 @@
-# Ludwig Contributors 🙏
+# Contributors
 
-Thank you to all the amazing people who have contributed to Ludwig! This project exists because of the community.
+Thanks to everyone who has contributed to Ludwig.
 
-## 🏆 Core Maintainers
+## Maintainers
 
-- **NanaBright** - Project Creator & Lead Maintainer
-  - Created the Ludwig language and platform
-  - Designed the web, desktop, and embedded frameworks
-  - Built the CLI tooling and development experience
+- **NanaBright** - Creator & Lead Maintainer
 
-## 💻 Code Contributors
+## Contributors
 
-_This section will be automatically updated as contributors join the project._
+Contributors will be listed here as they join the project.
 
-<!-- Use this format for contributors:
-- **[GitHub Username](GitHub Profile URL)** - [Real Name]
-  - Contribution summary
-  - Notable PRs: #123, #456
--->
+## How to Contribute
 
-## 📚 Documentation Contributors
-
-_Contributors who have improved documentation, guides, and examples._
-
-## 🐛 Bug Reporters
-
-_People who have helped identify and report issues._
-
-## 💡 Feature Requesters
-
-_Community members who have suggested valuable features._
-
-## 🌍 Translators
-
-_Contributors working on internationalization._
-
-## 🎓 Community Educators
-
-_People creating tutorials, videos, and educational content._
-
----
-
-## 🎯 How to Get Listed
-
-### Code Contributions
-- Submit a merged Pull Request
-- Contributions of any size are recognized!
-
-### Documentation
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - Improve README, guides, or API docs
 - Add examples or tutorials
 - Fix typos and improve clarity

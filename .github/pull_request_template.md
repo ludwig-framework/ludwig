@@ -1,53 +1,34 @@
-## 📋 Pull Request Summary
+## Summary
 
-### 🎯 What does this PR do?
-<!-- Provide a clear and concise description of what this PR accomplishes -->
+Brief description of changes.
 
-### 🔗 Related Issues
-<!-- Link to any related issues using "Fixes #123" or "Closes #123" -->
+## Related Issues
+
 - Fixes #
-- Related to #
 
-### 🚀 Type of Change
-<!-- Check all that apply -->
-- [ ] 🐛 Bug fix (non-breaking change that fixes an issue)
-- [ ] ✨ New feature (non-breaking change that adds functionality)
-- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] 📚 Documentation update
-- [ ] 🧪 Test improvement
-- [ ] 🔧 Refactoring (no functional changes)
-- [ ] ⚡ Performance improvement
-- [ ] 🎨 Code style/formatting
+## Type of Change
 
-### 🌐 Platform Impact
-<!-- Check all platforms this PR affects -->
-- [ ] 🌐 Web Framework
-- [ ] 🖥️ Desktop Framework
-- [ ] 🔌 Embedded Framework
-- [ ] 🛠️ CLI Tools
-- [ ] 📖 Documentation
-- [ ] 🧪 Tests
-- [ ] 📦 Examples
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation
 
-### 🔧 Technical Details
+## Changes Made
 
-#### Changes Made
-<!-- List the specific changes made -->
-- Change 1
-- Change 2
-- Change 3
+- 
+- 
+- 
 
-#### Implementation Approach
-<!-- Explain your approach and any important implementation decisions -->
+## Testing
 
-#### Breaking Changes
-<!-- If this is a breaking change, explain what breaks and how to migrate -->
+- [ ] Tests added/updated
+- [ ] All tests pass
 
-### 🧪 Testing
+## Checklist
 
-#### Test Coverage
-- [ ] Unit tests added/updated
-- [ ] Integration tests added/updated
+- [ ] Code follows project style
+- [ ] Self-reviewed
+- [ ] Documentation updated if needed
 - [ ] Manual testing completed
 - [ ] Examples tested
 

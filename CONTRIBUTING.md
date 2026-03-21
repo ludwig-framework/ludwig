@@ -1,83 +1,51 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/NanaBright/ludwig/main/assets/logo.png" alt="Ludwig Logo" width="120"/>
-</p>
+# Contributing to Ludwig
 
-# Contributing to Ludwig 🚀
+Thanks for your interest in contributing.
 
-Thank you for your interest in contributing to Ludwig! This guide will help you get started with contributing to our modern development platform.
+## Development Setup
 
-## 🤝 Code of Conduct
-
-By participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). Please read it to understand the standards we expect from our community.
-
-## 🛡️ Security
-
-If you find a security vulnerability, please do NOT open a public issue. Instead, follow our [Security Policy](SECURITY.md) for responsible disclosure.
-
-## 🎯 Ways to Contribute
-
-### 🐛 Bug Reports
-- Search existing issues first
-- Use our bug report template
-- Include reproduction steps
-- Provide system information
-
-### ✨ Feature Requests
-- Check the roadmap first
-- Use our feature request template
-- Explain the use case clearly
-- Consider implementation complexity
-
-### 📝 Documentation
-- Fix typos and improve clarity
-- Add examples and tutorials
-- Translate documentation
-- Update API references
-
-### 💻 Code Contributions
-- Framework improvements
-- New CLI commands
-- Example applications
-- Test coverage
-- Performance optimizations
-
----
-
-## 🛠️ Development Setup
-
-### Prerequisites
 ```bash
-# Required
-Python 3.8+
-Git
-
-# Optional (for testing)
-Node.js 16+ (for web examples)
-.NET 6+ (for desktop testing)
-Arduino IDE (for embedded examples)
-```
-
-### Getting Started
-```bash
-# 1. Fork the repository on GitHub
-# 2. Clone your fork
-git clone https://github.com/YOUR_USERNAME/ludwig.git
+git clone https://github.com/NanaBright/ludwig.git
 cd ludwig
-
-# 3. Set up remote upstream
-git remote add upstream https://github.com/NanaBright/ludwig.git
-
-# 4. Install development dependencies
 pip install -r requirements-dev.txt
-
-# 5. Verify installation
-python bin/ludwig help
-python tests/test_embedded_integration.py
 ```
 
----
+## Running Tests
 
-## 🏗️ Project Architecture
+```bash
+pytest
+```
+
+## Code Style
+
+- Use Black for formatting
+- Follow PEP 8 guidelines
+- Add docstrings for public functions
+
+```bash
+black .
+flake8
+```
+
+## Pull Requests
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests
+5. Submit a PR
+
+## Reporting Issues
+
+Include:
+- Ludwig version
+- Python version
+- Steps to reproduce
+- Expected vs actual behavior
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for vulnerability reporting.
 
 ### Core Components
 ```

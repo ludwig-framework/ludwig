@@ -1,83 +1,21 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/NanaBright/ludwig/main/assets/logo.png" alt="Ludwig Logo" width="120"/>
-</p>
-
 # Security Policy
-
-## Supported Versions
-
-We actively support the following versions of Ludwig with security updates:
-
-| Version | Supported          | Status |
-| ------- | ------------------ | ------ |
-| 0.1.x   | :white_check_mark: | Current development version |
-| < 0.1   | :x:                | Pre-release, not supported |
-
-> **Note**: Ludwig is currently in alpha development. Security updates will be prioritized for the current development branch.
 
 ## Reporting a Vulnerability
 
-We take security vulnerabilities seriously. If you discover a security vulnerability in Ludwig, please help us by reporting it responsibly.
+Do not open public issues for security vulnerabilities.
 
-### 🔒 How to Report
+Email security concerns to the maintainers or use GitHub's private vulnerability reporting.
 
-**For security vulnerabilities, please do NOT create public GitHub issues.**
-
-Instead, please:
-
-1. **Email us** at: `security@ludwig-lang.org` (if available) or create a private security advisory
-2. **GitHub Security Advisory**: Use GitHub's private vulnerability reporting feature:
-   - Go to the [Ludwig repository](https://github.com/NanaBright/ludwig)
-   - Click on "Security" tab
-   - Click "Report a vulnerability"
-3. **Include detailed information** (see below)
-
-### 📋 Information to Include
-
-When reporting a vulnerability, please include:
-
-- **Type of vulnerability** (e.g., SQL injection, XSS, code execution)
-- **Location** of the vulnerable code (file path and line numbers)
-- **Step-by-step instructions** to reproduce the vulnerability
-- **Proof of concept** or exploit code (if applicable)
-- **Potential impact** of the vulnerability
-- **Suggested fix** (if you have one)
-
-### 📧 Report Template
-
-```
-Subject: [SECURITY] Vulnerability Report - [Brief Description]
-
-Vulnerability Type: [e.g., Code Execution, Information Disclosure]
-Affected Component: [e.g., Web Framework, CLI, Embedded Framework]
-Severity: [Critical/High/Medium/Low]
-
-Description:
-[Detailed description of the vulnerability]
-
-Steps to Reproduce:
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-
-Expected Impact:
-[What could an attacker achieve?]
-
-Affected Files:
-- [file1.py:line_number]
-- [file2.py:line_number]
-
-Additional Information:
-[Any other relevant details]
-```
+Include:
+- Description of the issue
+- Steps to reproduce
+- Potential impact
 
 ## Response Timeline
 
-We are committed to responding to security reports promptly:
-
-| Timeline | Action |
-|----------|--------|
-| **Within 24 hours** | Acknowledge receipt of your report |
+- 24 hours: Acknowledge receipt
+- 72 hours: Initial assessment
+- 7 days: Fix timeline communicated
 | **Within 72 hours** | Initial assessment and severity classification |
 | **Within 1 week** | Detailed investigation and impact assessment |
 | **Within 2 weeks** | Fix development and testing |
