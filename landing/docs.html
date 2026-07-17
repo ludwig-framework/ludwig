@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation — Ludwig</title>
+<link rel="icon" href="assets/logo.png">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --mono:'SF Mono','Fira Code','JetBrains Mono','Cascadia Code',Consolas,monospace;
+  --sans:system-ui,-apple-system,'Segoe UI',Inter,Roboto,sans-serif;
+  --w:1140px;
+  --sidebar-w:240px;
+  --radius:10px;
+  --y:#facc15;--g:#34d399;--b:#818cf8;--p:#c084fc;--r:#fb7185;--o:#fb923c;--cyan:#22d3ee;
+}
+[data-theme="dark"]{
+  --bg:#07070a;--bg2:#0c0c12;--surface:#111118;--card:#15151f;
+  --edge:#1c1c2c;--edge2:#28283e;
+  --txt:#c8c8dc;--txt2:#6e6e88;--txt3:#3e3e54;
+  --code-bg:#0a0a10;--code-header:#0f0f18;
+  --nav-bg:rgba(7,7,10,.88);
+  --tag-bg:rgba(250,204,21,.08);--tag-txt:#facc15;
+  --sb-active:rgba(250,204,21,.07);--sb-hover:rgba(255,255,255,.02);
+  color-scheme:dark;
+}
+[data-theme="light"]{
+  --bg:#f8f8fb;--bg2:#f0f0f5;--surface:#fff;--card:#fff;
+  --edge:#e2e2ea;--edge2:#ccc;
+  --txt:#1a1a2e;--txt2:#555;--txt3:#888;
+  --code-bg:#1e1e2e;--code-header:#16161f;
+  --nav-bg:rgba(248,248,251,.9);
+  --tag-bg:rgba(180,130,0,.08);--tag-txt:#92700a;
+  --sb-active:rgba(250,204,21,.12);--sb-hover:rgba(0,0,0,.03);
+  color-scheme:light;
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--sans);background:var(--bg);color:var(--txt);line-height:1.65;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+::selection{background:var(--y);color:#000}
+a{color:var(--y);text-decoration:none;transition:opacity .2s}a:hover{opacity:.8}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--edge);border-radius:3px}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;padding:0 clamp(16px,4vw,40px);background:var(--nav-bg);backdrop-filter:blur(24px) saturate(1.5);border-bottom:1px solid var(--edge);transition:background .3s,border-color .3s}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:var(--w);margin:0 auto}
+.nav-l{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--txt);text-decoration:none}
+.nav-l img{width:24px;height:24px;border-radius:5px}
+.nav-r{display:flex;align-items:center;gap:10px}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{color:var(--txt2);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--txt);opacity:1}
+.theme-toggle{background:var(--card);border:1px solid var(--edge);border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--txt2);font-size:20px;transition:all .2s;display:flex;align-items:center}
+.theme-toggle:hover{border-color:var(--edge2);color:var(--txt)}
+
+/* ── LAYOUT ── */
+.layout{display:flex;max-width:var(--w);margin:0 auto;padding-top:56px;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{position:sticky;top:56px;width:var(--sidebar-w);flex-shrink:0;height:calc(100vh - 56px);overflow-y:auto;padding:24px 0 24px 24px;border-right:1px solid var(--edge);transition:border-color .3s}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--edge);border-radius:2px}
+.sb-group{margin-bottom:24px}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;padding-left:12px;transition:color .3s}
+.sb-link{display:block;padding:6px 12px;font-size:13px;color:var(--txt2);text-decoration:none;border-radius:6px;transition:all .15s;margin:1px 12px 1px 0}
+.sb-link:hover{color:var(--txt);background:var(--sb-hover);opacity:1}
+.sb-link.active{color:var(--y);background:var(--sb-active);font-weight:600}
+
+/* ── MAIN CONTENT ── */
+.content{flex:1;min-width:0;padding:32px 48px 80px}
+.content h1{font-size:clamp(28px,4vw,38px);font-weight:800;letter-spacing:-.025em;color:var(--txt);margin-bottom:8px;transition:color .3s}
+.content h2{font-size:22px;font-weight:700;color:var(--txt);margin:48px 0 12px;padding-top:20px;border-top:1px solid var(--edge);transition:color .3s,border-color .3s}
+.content h2:first-of-type{border-top:none;margin-top:32px}
+.content h3{font-size:17px;font-weight:700;color:var(--txt);margin:28px 0 8px;transition:color .3s}
+.content p{font-size:15px;color:var(--txt2);margin-bottom:16px;line-height:1.7;transition:color .3s}
+.content ul,.content ol{margin:0 0 16px 20px;font-size:14px;color:var(--txt2)}
+.content li{margin-bottom:6px;line-height:1.6}
+.content code{font-family:var(--mono);font-size:13px;background:var(--card);padding:2px 7px;border-radius:4px;border:1px solid var(--edge);transition:all .3s}
+.content strong{color:var(--txt);font-weight:600}
+.content a{color:var(--y)}
+.content .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:4px;background:var(--tag-bg);color:var(--tag-txt);margin-bottom:12px}
+.content .note{background:var(--sb-active);border:1px solid rgba(250,204,21,.15);border-radius:var(--radius);padding:14px 18px;margin:16px 0;font-size:13px;color:var(--txt2)}
+.content .note strong{color:var(--y)}
+
+/* ── CODE BLOCKS ── */
+.code-block{background:var(--code-bg);border:1px solid var(--edge);border-radius:var(--radius);overflow:hidden;margin:16px 0 24px;transition:border-color .3s}
+.code-bar{display:flex;align-items:center;gap:6px;padding:8px 14px;border-bottom:1px solid var(--edge);background:var(--code-header);transition:border-color .3s}
+.tdot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.code-bar span{font-size:11px;color:var(--txt3);font-family:var(--mono);margin-left:8px;transition:color .3s}
+.code-block pre{padding:18px 20px;font-family:var(--mono);font-size:12.5px;line-height:1.85;overflow-x:auto;white-space:pre;color:#c8c8dc}
+.k{color:var(--p)}.f{color:var(--b)}.s{color:var(--g)}.d{color:var(--y)}.c{color:var(--txt3);font-style:italic}.o{color:var(--txt2)}.n{color:var(--o)}.t{color:var(--r)}.m{color:var(--cyan)}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse;margin:16px 0 24px;font-size:13px}
+th{text-align:left;padding:10px 14px;background:var(--card);border:1px solid var(--edge);font-weight:600;color:var(--txt);font-size:12px;text-transform:uppercase;letter-spacing:.04em;transition:all .3s}
+td{padding:10px 14px;border:1px solid var(--edge);color:var(--txt2);transition:all .3s}
+tr:hover td{background:var(--sb-hover)}
+
+/* ── MOBILE ── */
+.sidebar-toggle{display:none;background:var(--card);border:1px solid var(--edge);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--txt2);font-size:16px}
+@media(max-width:860px){
+  .sidebar-toggle{display:flex}
+  .sidebar{position:fixed;top:56px;left:0;bottom:0;z-index:50;width:260px;background:var(--bg);transform:translateX(-100%);transition:transform .25s;padding-top:16px}
+  .sidebar.open{transform:translateX(0);box-shadow:20px 0 60px rgba(0,0,0,.3)}
+  .content{padding:24px 20px 60px}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+<div class="nav-inner">
+  <a class="nav-l" href="index.html"><img src="assets/logo.png" alt="Ludwig">Ludwig</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="docs.html" class="active">Docs</a>
+    <a href="examples.html">Examples</a>
+    <a href="https://github.com/ludwig-framework/ludwig">GitHub</a>
+  </div>
+  <div class="nav-r">
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">&#9790;</span></button>
+  </div>
+</div>
+</nav>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-group">
+    <div class="sb-label">Getting Started</div>
+    <a class="sb-link active" href="#intro">Introduction</a>
+    <a class="sb-link" href="#install">Installation</a>
+    <a class="sb-link" href="#quickstart">Quick Start</a>
+    <a class="sb-link" href="#project-structure">Project Structure</a>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">Web</div>
+    <a class="sb-link" href="#web">HTTP Server</a>
+    <a class="sb-link" href="#web-routes">Routes</a>
+    <a class="sb-link" href="#web-request">Request &amp; Response</a>
+    <a class="sb-link" href="#web-static">Static Files</a>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">Database</div>
+    <a class="sb-link" href="#db">Database</a>
+    <a class="sb-link" href="#db-model">Model ORM</a>
+    <a class="sb-link" href="#db-query">Query Builder</a>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">IoT</div>
+    <a class="sb-link" href="#iot">Overview</a>
+    <a class="sb-link" href="#iot-pins">Pins &amp; GPIO</a>
+    <a class="sb-link" href="#iot-sensors">Sensors</a>
+    <a class="sb-link" href="#iot-actuators">Actuators</a>
+    <a class="sb-link" href="#iot-robot">Robot</a>
+    <a class="sb-link" href="#iot-home">Smart Home</a>
+    <a class="sb-link" href="#iot-alarm">Alarm</a>
+    <a class="sb-link" href="#iot-garden">Garden</a>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">AI</div>
+    <a class="sb-link" href="#ai">Overview</a>
+    <a class="sb-link" href="#ai-assistant">Voice Assistant</a>
+    <a class="sb-link" href="#ai-vision">Computer Vision</a>
+    <a class="sb-link" href="#ai-automator">Automator</a>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">CLI</div>
+    <a class="sb-link" href="#cli">Commands</a>
+  </div>
+</aside>
+
+<!-- CONTENT -->
+<main class="content">
+
+<!-- ════════════════════════════════════════════════════
+     GETTING STARTED
+     ════════════════════════════════════════════════════ -->
+
+<h1 id="intro">Ludwig Documentation</h1>
+<p>Ludwig is a Python framework for building web APIs, IoT systems, and AI applications with one consistent, zero-dependency core.</p>
+
+<h2 id="install">Installation</h2>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>terminal</span></div>
+  <pre><span class="c"># Core framework (zero dependencies)</span>
+<span class="m">$</span> pip install ludwig
+
+<span class="c"># With AI features</span>
+<span class="m">$</span> pip install ludwig[ai]
+
+<span class="c"># With computer vision</span>
+<span class="m">$</span> pip install ludwig[vision]
+
+<span class="c"># With Raspberry Pi GPIO</span>
+<span class="m">$</span> pip install ludwig[pi]
+
+<span class="c"># Everything</span>
+<span class="m">$</span> pip install ludwig[all]</pre>
+</div>
+
+<h2 id="quickstart">Quick Start</h2>
+<p>Create a new project with a template, or start from scratch:</p>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>terminal</span></div>
+  <pre><span class="m">$</span> ludwig new my-api --template api
+<span class="m">$</span> cd my-api
+<span class="m">$</span> python app.py</pre>
+</div>
+<p>Or write it yourself:</p>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+  <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>
+
+app = <span class="t">App</span>(<span class="n">name</span>=<span class="s">"My App"</span>)
+
+<span class="d">@app.get</span>(<span class="s">"/"</span>)
+<span class="k">def</span> <span class="f">home</span>(req):
+    <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"ok"</span>}
+
+app.<span class="f">run</span>(<span class="n">debug</span>=<span class="k">True</span>)</pre>
+</div>
+
+<h2 id="project-structure">Project Structure</h2>
+<table>
+  <tr><th>Path</th><th>Purpose</th></tr>
+  <tr><td><code>ludwig/__init__.py</code></td><td>Main exports — <code>App</code>, <code>Model</code>, <code>Database</code>, all IoT/AI classes</td></tr>
+  <tr><td><code>ludwig/core.py</code></td><td><code>App</code> and <code>Config</code> classes</td></tr>
+  <tr><td><code>ludwig/web.py</code></td><td><code>Web</code> server, routing, <code>Request</code>/<code>Response</code></td></tr>
+  <tr><td><code>ludwig/db.py</code></td><td><code>Database</code>, <code>QueryBuilder</code>, <code>Model</code> ORM</td></tr>
+  <tr><td><code>ludwig/cli.py</code></td><td>CLI commands: <code>new</code>, <code>dev</code>, <code>run</code></td></tr>
+  <tr><td><code>ludwig/iot/</code></td><td>GPIO, sensors, actuators, robot, home, garden, alarm, camera</td></tr>
+  <tr><td><code>ludwig/ai/</code></td><td>Voice assistant, computer vision, automator</td></tr>
+</table>
+
+<!-- ════════════════════════════════════════════════════
+     WEB
+     ════════════════════════════════════════════════════ -->
+
+<h2 id="web">Web Server</h2>
+<p>Ludwig includes a built-in HTTP server with no external dependencies. Use the <code>App</code> class for unified Web+IoT+AI apps, or <code>Web</code> standalone.</p>
+
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+  <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>
+
+app = <span class="t">App</span>(<span class="n">name</span>=<span class="s">"Web Demo"</span>)
+
+<span class="c"># Route parameters with :param syntax</span>
+<span class="d">@app.get</span>(<span class="s">"/users/:id"</span>)
+<span class="k">def</span> <span class="f">get_user</span>(req):
+    <span class="k">return</span> {<span class="s">"id"</span>: req.params[<span class="s">"id"</span>]}
+
+<span class="d">@app.post</span>(<span class="s">"/users"</span>)
+<span class="k">def</span> <span class="f">create_user</span>(req):
+    <span class="k">return</span> req.json, <span class="n">201</span>
+
+<span class="d">@app.put</span>(<span class="s">"/users/:id"</span>)
+<span class="k">def</span> <span class="f">update_user</span>(req):
+    <span class="k">return</span> {<span class="s">"updated"</span>: req.params[<span class="s">"id"</span>]}
+
+<span class="d">@app.delete</span>(<span class="s">"/users/:id"</span>)
+<span class="k">def</span> <span class="f">delete_user</span>(req):
+    <span class="k">return</span> {<span class="s">"deleted"</span>: <span class="k">True</span>}
+
+app.<span class="f">run</span>(<span class="n">debug</span>=<span class="k">True</span>)</pre>
+</div>
+
+<h3 id="web-routes">Routes</h3>
+<p>Register routes with decorators. Available methods:</p>
+<table>
+  <tr><th>Method</th><th>Example</th></tr>
+  <tr><td><code>@app.get(path)</code></td><td><code>@app.get("/items")</code></td></tr>
+  <tr><td><code>@app.post(path)</code></td><td><code>@app.post("/items")</code></td></tr>
+  <tr><td><code>@app.put(path)</code></td><td><code>@app.put("/items/:id")</code></td></tr>
+  <tr><td><code>@app.delete(path)</code></td><td><code>@app.delete("/items/:id")</code></td></tr>
+  <tr><td><code>@app.route(path, methods)</code></td><td><code>@app.route("/x", ["GET","POST"])</code></td></tr>
+  <tr><td><code>@app.api(path)</code></td><td>Registers GET, POST, PUT, DELETE all at once</td></tr>
+</table>
+
+<h3 id="web-request">Request &amp; Response</h3>
+<p>Route handlers receive a <code>Request</code> object with:</p>
+<ul>
+  <li><code>req.params</code> — URL parameters (<code>:id</code> values)</li>
+  <li><code>req.query</code> — Query string as dict</li>
+  <li><code>req.json</code> — Parsed JSON body</li>
+  <li><code>req.headers</code> — Request headers</li>
+  <li><code>req.method</code> — HTTP method</li>
+  <li><code>req.path</code> — Request path</li>
+</ul>
+<p>Return a <code>dict</code> or <code>list</code> for JSON, a <code>str</code> for HTML, or a <code>Response</code> object for full control.</p>
+
+<h3 id="web-static">Static Files</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>static.py</span></div>
+  <pre><span class="k">from</span> ludwig.web <span class="k">import</span> <span class="t">Web</span>
+
+web = <span class="t">Web</span>()
+web.<span class="f">static</span>(<span class="s">"/static"</span>, <span class="s">"./public"</span>)
+web.<span class="f">run</span>()</pre>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     DATABASE
+     ════════════════════════════════════════════════════ -->
+
+<h2 id="db">Database</h2>
+<p>Ludwig includes a lightweight ORM backed by SQLite (or PostgreSQL with <code>ludwig[postgres]</code>). Define models as dataclasses.</p>
+
+<h3 id="db-model">Model ORM</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>models.py</span></div>
+  <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">Database</span>, <span class="t">Model</span>
+<span class="k">from</span> dataclasses <span class="k">import</span> dataclass
+
+db = <span class="t">Database</span>(<span class="s">"app.db"</span>)
+
+<span class="d">@dataclass</span>
+<span class="k">class</span> <span class="t">User</span>(<span class="t">Model</span>):
+    name: <span class="o">str</span>
+    email: <span class="o">str</span>
+    age: <span class="o">int</span> = <span class="n">0</span>
+
+<span class="c"># Create</span>
+user = <span class="t">User</span>.<span class="f">create</span>(<span class="n">name</span>=<span class="s">"Alice"</span>, <span class="n">email</span>=<span class="s">"a@b.com"</span>)
+
+<span class="c"># Read</span>
+found = <span class="t">User</span>.<span class="f">find</span>(user.id)
+all_users = <span class="t">User</span>.<span class="f">all</span>()
+adults = <span class="t">User</span>.<span class="f">where</span>(<span class="s">"age"</span>, <span class="s">">="</span>, <span class="n">18</span>)
+
+<span class="c"># Update</span>
+found.name = <span class="s">"Alice Smith"</span>
+found.<span class="f">save</span>()
+
+<span class="c"># Delete</span>
+found.<span class="f">delete</span>()
+
+<span class="c"># Serialize</span>
+found.<span class="f">to_dict</span>()   <span class="c"># {"id": 1, "name": "...", ...}</span>
+found.<span class="f">to_json</span>()   <span class="c"># JSON string</span></pre>
+</div>
+
+<div class="note"><strong>Note:</strong> The table is auto-created on first query. Table name defaults to the lowercase class name + "s" (e.g. <code>User</code> &rarr; <code>users</code>).</div>
+
+<h3 id="db-query">Query Builder</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>query.py</span></div>
+  <pre><span class="c"># Fluent query builder</span>
+users = db.<span class="f">table</span>(<span class="s">"users"</span>).<span class="f">where</span>(<span class="s">"age"</span>, <span class="s">">"</span>, <span class="n">18</span>).<span class="f">order_by</span>(<span class="s">"name"</span>).<span class="f">get</span>()
+
+<span class="c"># First result</span>
+user = db.<span class="f">table</span>(<span class="s">"users"</span>).<span class="f">where</span>(<span class="s">"email"</span>, <span class="s">"alice@test.com"</span>).<span class="f">first</span>()
+
+<span class="c"># Count</span>
+count = db.<span class="f">table</span>(<span class="s">"users"</span>).<span class="f">count</span>()
+
+<span class="c"># Raw SQL</span>
+rows = db.<span class="f">query</span>(<span class="s">"SELECT * FROM users WHERE name = ?"</span>, [<span class="s">"Alice"</span>])</pre>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     IOT
+     ════════════════════════════════════════════════════ -->
+
+<h2 id="iot">IoT Overview</h2>
+<p>Ludwig's IoT layer provides hardware-agnostic GPIO with automatic board detection and simulation fallback. Import everything from <code>ludwig.iot</code>.</p>
+
+<div class="note"><strong>Simulation mode:</strong> When no hardware is detected, all GPIO operations print <code>[SIM]</code> messages. Write and test your code on any desktop, then deploy to a Raspberry Pi without changing a line.</div>
+
+<h3 id="iot-pins">Pins &amp; GPIO</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>pin.py</span></div>
+  <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Pin</span>
+
+<span class="c"># Output pin</span>
+led = <span class="t">Pin</span>(<span class="n">17</span>, <span class="n">mode</span>=<span class="s">"output"</span>)
+led.<span class="f">on</span>()
+led.<span class="f">off</span>()
+led.<span class="f">toggle</span>()
+
+<span class="c"># Input pin with pull-up</span>
+button = <span class="t">Pin</span>(<span class="n">18</span>, <span class="n">mode</span>=<span class="s">"input"</span>, <span class="n">pull</span>=<span class="s">"up"</span>)
+<span class="k">if</span> button.<span class="f">read</span>():
+    <span class="f">print</span>(<span class="s">"Pressed!"</span>)
+
+<span class="c"># PWM (dimming, speed control)</span>
+pwm = led.<span class="f">pwm</span>()
+pwm.<span class="f">duty</span>(<span class="n">50</span>)  <span class="c"># 50% duty cycle</span>
+pwm.<span class="f">stop</span>()</pre>
+</div>
+
+<h3 id="iot-sensors">Sensors</h3>
+<p>All sensors are created via factory methods on the <code>Sensor</code> class:</p>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>sensors.py</span></div>
+  <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Sensor</span>
+
+motion = <span class="t">Sensor</span>.<span class="f">motion</span>(<span class="n">pin</span>=<span class="n">4</span>)
+temp   = <span class="t">Sensor</span>.<span class="f">temperature</span>(<span class="n">pin</span>=<span class="n">7</span>, <span class="n">type</span>=<span class="s">"dht22"</span>)
+humid  = <span class="t">Sensor</span>.<span class="f">humidity</span>(<span class="n">pin</span>=<span class="n">7</span>)
+dist   = <span class="t">Sensor</span>.<span class="f">ultrasonic</span>(<span class="n">trigger</span>=<span class="n">23</span>, <span class="n">echo</span>=<span class="n">24</span>)
+soil   = <span class="t">Sensor</span>.<span class="f">moisture</span>(<span class="n">pin</span>=<span class="n">0</span>)
+light  = <span class="t">Sensor</span>.<span class="f">light</span>(<span class="n">pin</span>=<span class="n">1</span>)
+door   = <span class="t">Sensor</span>.<span class="f">door</span>(<span class="n">pin</span>=<span class="n">5</span>)
+window = <span class="t">Sensor</span>.<span class="f">window</span>(<span class="n">pin</span>=<span class="n">6</span>)
+
+<span class="c"># Read values</span>
+<span class="f">print</span>(motion.<span class="f">read</span>())    <span class="c"># True/False</span>
+<span class="f">print</span>(temp.<span class="f">read</span>())      <span class="c"># float (celsius)</span>
+<span class="f">print</span>(dist.<span class="f">read</span>())      <span class="c"># float (cm)</span>
+
+<span class="c"># Event handlers</span>
+<span class="d">@motion.on_detected</span>
+<span class="k">def</span> <span class="f">on_motion</span>():
+    <span class="f">print</span>(<span class="s">"Movement!"</span>)</pre>
+</div>
+
+<h3 id="iot-actuators">Actuators</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>actuators.py</span></div>
+  <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Light</span>, <span class="t">Motor</span>, <span class="t">Servo</span>, <span class="t">Relay</span>, <span class="t">Buzzer</span>
+
+<span class="c"># Light — on/off/dim/blink</span>
+light = <span class="t">Light</span>(<span class="n">pin</span>=<span class="n">17</span>, <span class="n">dimmable</span>=<span class="k">True</span>)
+light.<span class="f">on</span>()
+light.<span class="f">brightness</span>(<span class="n">50</span>)
+light.<span class="f">blink</span>(<span class="n">times</span>=<span class="n">3</span>)
+light.<span class="f">off</span>()
+
+<span class="c"># Motor — H-bridge with speed</span>
+motor = <span class="t">Motor</span>(<span class="n">forward</span>=<span class="n">17</span>, <span class="n">backward</span>=<span class="n">18</span>, <span class="n">enable</span>=<span class="n">12</span>)
+motor.<span class="f">forward</span>(<span class="n">speed</span>=<span class="n">75</span>)
+motor.<span class="f">stop</span>()
+
+<span class="c"># Servo — 0 to 180 degrees</span>
+servo = <span class="t">Servo</span>(<span class="n">pin</span>=<span class="n">18</span>)
+servo.<span class="f">angle</span>(<span class="n">90</span>)
+servo.<span class="f">center</span>()
+
+<span class="c"># Relay — high-power devices</span>
+pump = <span class="t">Relay</span>(<span class="n">pin</span>=<span class="n">17</span>)
+pump.<span class="f">on</span>()
+
+<span class="c"># Buzzer — tones and melodies</span>
+buzzer = <span class="t">Buzzer</span>(<span class="n">pin</span>=<span class="n">18</span>)
+buzzer.<span class="f">beep</span>()
+buzzer.<span class="f">tone</span>(<span class="n">440</span>, <span class="n">0.5</span>)</pre>
+</div>
+
+<h3 id="iot-robot">Robot</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>robot.py</span></div>
+  <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Robot</span>, <span class="t">Sensor</span>
+
+<span class="c"># 2-wheel differential drive</span>
+robot = <span class="t">Robot</span>.<span class="f">car</span>(
+    <span class="n">left</span>=<span class="o">{</span><span class="s">"forward"</span>: <span class="n">17</span>, <span class="s">"backward"</span>: <span class="n">18</span><span class="o">}</span>,
+    <span class="n">right</span>=<span class="o">{</span><span class="s">"forward"</span>: <span class="n">22</span>, <span class="s">"backward"</span>: <span class="n">23</span><span class="o">}</span>,
+)
+
+<span class="c"># Add obstacle sensor</span>
+robot.<span class="f">add_sensor</span>(<span class="s">"front"</span>,
+    <span class="t">Sensor</span>.<span class="f">ultrasonic</span>(<span class="n">trigger</span>=<span class="n">24</span>, <span class="n">echo</span>=<span class="n">25</span>))
+
+<span class="c"># Movement</span>
+robot.<span class="f">forward</span>(<span class="n">speed</span>=<span class="n">50</span>)
+robot.<span class="f">backward</span>(<span class="n">duration</span>=<span class="n">0.5</span>)
+robot.<span class="f">turn</span>(<span class="n">90</span>)
+robot.<span class="f">stop</span>()
+
+<span class="c"># Obstacle avoidance callback</span>
+<span class="d">@robot.on_obstacle</span>
+<span class="k">def</span> <span class="f">avoid</span>():
+    robot.<span class="f">stop</span>()
+    robot.<span class="f">backward</span>(<span class="n">duration</span>=<span class="n">0.5</span>)
+    robot.<span class="f">turn</span>(<span class="n">90</span>)
+    robot.<span class="f">forward</span>()
+
+<span class="c"># Start monitoring loop</span>
+robot.<span class="f">run</span>()</pre>
+</div>
+
+<h3 id="iot-home">Smart Home</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>home.py</span></div>
+  <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Home</span>, <span class="t">Light</span>, <span class="t">Sensor</span>
+
+home = <span class="t">Home</span>()
+
+<span class="c"># Define rooms</span>
+living = home.<span class="f">room</span>(<span class="s">"living_room"</span>)
+living.<span class="f">add</span>(<span class="t">Light</span>(<span class="n">pin</span>=<span class="n">17</span>, <span class="n">name</span>=<span class="s">"ceiling"</span>, <span class="n">dimmable</span>=<span class="k">True</span>))
+living.<span class="f">add</span>(<span class="t">Sensor</span>.<span class="f">motion</span>(<span class="n">pin</span>=<span class="n">4</span>))
+
+bedroom = home.<span class="f">room</span>(<span class="s">"bedroom"</span>)
+bedroom.<span class="f">add</span>(<span class="t">Light</span>(<span class="n">pin</span>=<span class="n">18</span>, <span class="n">name</span>=<span class="s">"main"</span>))
+
+<span class="c"># Time-based automations</span>
+<span class="d">@home.at</span>(<span class="s">"sunset"</span>)
+<span class="k">def</span> <span class="f">evening</span>():
+    living.<span class="f">light</span>(<span class="s">"ceiling"</span>).<span class="f">on</span>()
+    living.<span class="f">light</span>(<span class="s">"ceiling"</span>).<span class="f">brightness</span>(<span class="n">70</span>)
+
+<span class="d">@home.at</span>(<span class="s">"23:00"</span>)
+<span class="k">def</span> <span class="f">bedtime</span>():
+    home.<span class="f">all_lights_off</span>()
+
+<span class="c"># Sensor-triggered automations</span>
+<span class="d">@home.when</span>(<span class="k">lambda</span>: living.<span class="f">motion</span>.<span class="f">read</span>())
+<span class="k">def</span> <span class="f">motion_light</span>():
+    living.<span class="f">light</span>(<span class="s">"ceiling"</span>).<span class="f">on</span>(<span class="n">duration</span>=<span class="n">300</span>)
+
+home.<span class="f">run</span>()</pre>
+</div>
+
+<h3 id="iot-alarm">Alarm</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>alarm.py</span></div>
+  <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Alarm</span>, <span class="t">Sensor</span>
+
+alarm = <span class="t">Alarm</span>()
+alarm.<span class="f">add</span>(<span class="t">Sensor</span>.<span class="f">motion</span>(<span class="n">pin</span>=<span class="n">4</span>), <span class="n">zone</span>=<span class="s">"living_room"</span>)
+alarm.<span class="f">add</span>(<span class="t">Sensor</span>.<span class="f">door</span>(<span class="n">pin</span>=<span class="n">5</span>), <span class="n">zone</span>=<span class="s">"front_door"</span>)
+alarm.<span class="f">siren</span>(<span class="n">pin</span>=<span class="n">17</span>)
+
+<span class="d">@alarm.on_triggered</span>
+<span class="k">def</span> <span class="f">alert</span>(zone, sensor):
+    alarm.<span class="f">send_sms</span>(<span class="s">"+1234567890"</span>, <span class="s">f"Intruder in </span><span class="o">{</span>zone<span class="o">}</span><span class="s">!"</span>)
+
+alarm.<span class="f">arm</span>()
+alarm.<span class="f">run</span>()</pre>
+</div>
+
+<h3 id="iot-garden">Garden</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>garden.py</span></div>
+  <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Garden</span>
+
+garden = <span class="t">Garden</span>()
+garden.<span class="f">add_plant</span>(<span class="s">"tomatoes"</span>,
+    <span class="n">moisture_pin</span>=<span class="n">0</span>, <span class="n">pump_pin</span>=<span class="n">17</span>,
+    <span class="n">threshold</span>=<span class="n">30</span>, <span class="n">water_duration</span>=<span class="n">10</span>)
+
+garden.<span class="f">add_plant</span>(<span class="s">"herbs"</span>,
+    <span class="n">moisture_pin</span>=<span class="n">1</span>, <span class="n">pump_pin</span>=<span class="n">18</span>,
+    <span class="n">threshold</span>=<span class="n">40</span>)
+
+<span class="d">@garden.check_every</span>(<span class="n">hours</span>=<span class="n">1</span>)
+<span class="k">def</span> <span class="f">water_check</span>(plant):
+    <span class="k">if</span> plant.needs_water:
+        plant.<span class="f">water</span>(<span class="n">seconds</span>=<span class="n">10</span>)
+        garden.<span class="f">log</span>(<span class="s">f"Watered </span><span class="o">{</span>plant.name<span class="o">}</span><span class="s">"</span>)
+
+garden.<span class="f">run</span>()</pre>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     AI
+     ════════════════════════════════════════════════════ -->
+
+<h2 id="ai">AI Overview</h2>
+<p>Ludwig's AI modules provide voice assistants, computer vision, and natural language automation. Install with <code>pip install ludwig[ai]</code> or <code>ludwig[vision]</code>.</p>
+
+<h3 id="ai-assistant">Voice Assistant</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>assistant.py</span></div>
+  <pre><span class="k">from</span> ludwig.ai <span class="k">import</span> <span class="t">Assistant</span>
+
+assistant = <span class="t">Assistant</span>(
+    <span class="n">name</span>=<span class="s">"Ludwig"</span>,
+    <span class="n">model</span>=<span class="s">"gpt-4o"</span>,
+    <span class="n">voice</span>=<span class="s">"alloy"</span>,
+)
+
+<span class="c"># Chat (text only, no mic needed)</span>
+reply = assistant.<span class="f">chat</span>(<span class="s">"What's the weather?"</span>)
+
+<span class="c"># Voice loop with wake word</span>
+<span class="d">@assistant.on_wake</span>(<span class="s">"Hey Ludwig"</span>)
+<span class="k">def</span> <span class="f">handle</span>():
+    cmd = assistant.<span class="f">listen</span>()
+    resp = assistant.<span class="f">think</span>(cmd)
+    assistant.<span class="f">speak</span>(resp)
+
+<span class="c"># Command routing</span>
+<span class="d">@assistant.on_command</span>(<span class="s">"turn on lights"</span>)
+<span class="k">def</span> <span class="f">lights_on</span>():
+    home.<span class="f">all_lights_on</span>()
+
+assistant.<span class="f">run</span>()</pre>
+</div>
+
+<h3 id="ai-vision">Computer Vision</h3>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>vision.py</span></div>
+  <pre><span class="k">from</span> ludwig.ai <span class="k">import</span> <span class="t">Vision</span>
+
+vision = <span class="t">Vision</span>(<span class="n">camera</span>=<span class="n">0</span>, <span class="n">model</span>=<span class="s">"yolo"</span>, <span class="n">confidence</span>=<span class="n">0.5</span>)
+
+<span class="c"># Per-label callbacks</span>
+<span class="d">@vision.on_detect</span>(<span class="s">"person"</span>)
+<span class="k">def</span> <span class="f">person</span>(det):
+    <span class="f">print</span>(<span class="s">f"Person at </span><span class="o">{</span>det.center<span class="o">}</span><span class="s"> (</span><span class="o">{</span>det.confidence:.0%<span class="o">}</span><span class="s">)"</span>)
+
+<span class="c"># Manual detection</span>
+frame = vision.<span class="f">capture</span>()
+dets = vision.<span class="f">detect</span>(frame)
+
+<span class="c"># Object tracking</span>
+vision.<span class="f">track</span>(<span class="s">"person"</span>)
+vision.<span class="f">run</span>(<span class="n">display</span>=<span class="k">True</span>)</pre>
+</div>
+
+<h3 id="ai-automator">Automator</h3>
+<p>Define automation rules in natural language:</p>
+<div class="code-block">
+  <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>automator.py</span></div>
+  <pre><span class="k">from</span> ludwig.ai <span class="k">import</span> <span class="t">Automator</span>
+
+auto = <span class="t">Automator</span>(<span class="n">model</span>=<span class="s">"gpt-4o"</span>)
+auto.context = <span class="o">{</span>
+    <span class="s">"lights"</span>: home.<span class="f">all_lights</span>,
+    <span class="s">"temperature"</span>: living.<span class="f">temperature</span>,
+<span class="o">}</span>
+
+auto.<span class="f">add_rule</span>(<span class="s">"Turn off all lights at midnight"</span>)
+auto.<span class="f">add_rule</span>(<span class="s">"If temperature > 28, turn on AC"</span>)
+
+auto.<span class="f">run</span>()</pre>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     CLI
+     ════════════════════════════════════════════════════ -->
+
+<h2 id="cli">CLI Commands</h2>
+<table>
+  <tr><th>Command</th><th>Description</th></tr>
+  <tr><td><code>ludwig new &lt;name&gt; --template &lt;tpl&gt;</code></td><td>Create a project from a template</td></tr>
+  <tr><td><code>ludwig dev</code></td><td>Start dev server with auto-reload</td></tr>
+  <tr><td><code>ludwig run &lt;file.py&gt;</code></td><td>Run a Ludwig file</td></tr>
+  <tr><td><code>ludwig version</code></td><td>Print Ludwig version</td></tr>
+</table>
+
+<h3>Available Templates</h3>
+<table>
+  <tr><td><code>basic</code></td><td>Minimal web app</td></tr>
+  <tr><td><code>api</code></td><td>REST API with database</td></tr>
+  <tr><td><code>web</code></td><td>Web app with HTML</td></tr>
+  <tr><td><code>robot</code></td><td>Robot car with sensors</td></tr>
+  <tr><td><code>alarm</code></td><td>Home security system</td></tr>
+  <tr><td><code>smart-home</code></td><td>Home automation</td></tr>
+  <tr><td><code>garden</code></td><td>Plant watering system</td></tr>
+  <tr><td><code>assistant</code></td><td>Voice assistant</td></tr>
+  <tr><td><code>vision</code></td><td>Computer vision</td></tr>
+  <tr><td><code>dashboard</code></td><td>Web dashboard</td></tr>
+  <tr><td><code>chatbot</code></td><td>AI chat interface</td></tr>
+  <tr><td><code>weather-station</code></td><td>IoT weather monitoring</td></tr>
+  <tr><td><code>door-lock</code></td><td>Smart door lock</td></tr>
+  <tr><td><code>led</code></td><td>RGB LED strip controller</td></tr>
+</table>
+
+<div class="note" style="margin-top:40px"><strong>Questions?</strong> Open an issue on <a href="https://github.com/ludwig-framework/ludwig/issues">GitHub</a>.</div>
+
+</main>
+</div>
+
+<script>
+function toggleTheme(){
+  const h=document.documentElement;
+  const n=h.getAttribute('data-theme')==='dark'?'light':'dark';
+  h.setAttribute('data-theme',n);
+  document.getElementById('themeIcon').textContent=n==='dark'?'&#9790;':'&#9728;';
+  localStorage.setItem('ludwig-theme',n);
+}
+(function(){
+  const s=localStorage.getItem('ludwig-theme');
+  if(s){document.documentElement.setAttribute('data-theme',s);document.getElementById('themeIcon').textContent=s==='dark'?'&#9790;':'&#9728;';}
+})();
+/* Sidebar active state on scroll */
+const links=document.querySelectorAll('.sb-link');
+const sections=[];
+links.forEach(l=>{
+  const id=l.getAttribute('href');
+  if(id&&id.startsWith('#')){
+    const el=document.getElementById(id.slice(1));
+    if(el)sections.push({el,link:l});
+  }
+});
+function updateActive(){
+  let current=sections[0];
+  for(const s of sections){
+    if(s.el.getBoundingClientRect().top<=100)current=s;
+  }
+  links.forEach(l=>l.classList.remove('active'));
+  if(current)current.link.classList.add('active');
+}
+window.addEventListener('scroll',updateActive,{passive:true});
+updateActive();
+</script>
+</body>
+</html>

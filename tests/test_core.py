@@ -28,7 +28,7 @@ class TestApp:
         def handler(req):
             return "ok"
         
-        assert "/test" in app.routes or len(app.routes) > 0
+        assert "/test" in app._routes or len(app._routes) > 0
     
     def test_multiple_methods(self):
         """Test different HTTP methods."""
@@ -51,7 +51,7 @@ class TestApp:
             return {"method": "DELETE"}
         
         # Routes should be registered
-        assert len(app.routes) >= 4
+        assert len(app._routes) >= 4
 
 
 class TestConfig:

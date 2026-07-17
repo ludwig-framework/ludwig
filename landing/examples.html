@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examples &amp; Templates — Ludwig</title>
+<meta name="description" content="Full working project examples for the Ludwig Python framework. Scaffold any project with one command.">
+<link rel="icon" href="assets/logo.png" type="image/png">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --mono:'SF Mono','Fira Code','JetBrains Mono','Cascadia Code',Consolas,monospace;
+  --sans:system-ui,-apple-system,'Segoe UI',Inter,Roboto,sans-serif;
+  --w:1140px;--radius:10px;--radius-sm:8px;
+  --y:#facc15;--y2:#fde68a;--g:#34d399;--b:#818cf8;--p:#c084fc;--r:#fb7185;--o:#fb923c;--cyan:#22d3ee;
+}
+[data-theme="dark"]{
+  --bg:#07070a;--bg2:#0c0c12;--surface:#111118;--card:#15151f;
+  --edge:#1c1c2c;--edge2:#28283e;
+  --txt:#c8c8dc;--txt2:#6e6e88;--txt3:#3e3e54;--txt4:#262636;
+  --code-bg:#0a0a10;--code-header:#0f0f18;
+  --nav-bg:rgba(7,7,10,.88);
+  --tag-bg:rgba(250,204,21,.08);--tag-txt:#facc15;
+  --filter-active:rgba(250,204,21,.12);
+  --filter-hover:rgba(255,255,255,.04);
+  color-scheme:dark;
+}
+[data-theme="light"]{
+  --bg:#f8f8fb;--bg2:#f0f0f5;--surface:#fff;--card:#fff;
+  --edge:#e2e2ea;--edge2:#ccc;
+  --txt:#1a1a2e;--txt2:#555;--txt3:#888;--txt4:#bbb;
+  --code-bg:#1e1e2e;--code-header:#16161f;
+  --nav-bg:rgba(248,248,251,.9);
+  --tag-bg:rgba(180,130,0,.08);--tag-txt:#92700a;
+  --filter-active:rgba(250,204,21,.15);
+  --filter-hover:rgba(0,0,0,.04);
+  color-scheme:light;
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--sans);background:var(--bg);color:var(--txt);line-height:1.65;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+::selection{background:var(--y);color:#000}
+a{color:var(--y);text-decoration:none;transition:opacity .2s}a:hover{opacity:.8}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--edge);border-radius:3px}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;padding:0 clamp(16px,4vw,40px);background:var(--nav-bg);backdrop-filter:blur(24px) saturate(1.5);border-bottom:1px solid var(--edge);transition:background .3s,border-color .3s}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:var(--w);margin:0 auto}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--txt);text-decoration:none;transition:color .3s}
+.nav-brand img{width:24px;height:24px;border-radius:5px}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{color:var(--txt2);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--txt);opacity:1}
+.nav-r{display:flex;align-items:center;gap:10px}
+.theme-toggle{background:var(--card);border:1px solid var(--edge);border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--txt2);font-size:20px;transition:all .2s;display:flex;align-items:center}
+.theme-toggle:hover{border-color:var(--edge2);color:var(--txt)}
+.gh-link{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--edge);padding:5px 12px;border-radius:6px;color:var(--txt2);font-size:12px;font-weight:600;text-decoration:none;transition:all .2s}
+.gh-link:hover{border-color:var(--edge2);color:var(--txt);opacity:1}
+@media(max-width:768px){.nav-links a:not(.nav-cta){display:none}.nav{padding:0 16px}}
+
+/* HERO */
+.hero{padding:100px 24px 48px;text-align:center;max-width:var(--w);margin:0 auto}
+.hero h1{font-size:clamp(32px,5vw,48px);font-weight:800;letter-spacing:-.03em;margin-bottom:12px;transition:color .3s}
+.hero p{font-size:clamp(15px,2vw,17px);color:var(--txt2);max-width:600px;margin:0 auto 32px;line-height:1.7;transition:color .3s}
+
+/* FILTERS */
+.filters{display:flex;gap:8px;justify-content:center;padding:0 24px 40px;flex-wrap:wrap}
+.filter-btn{padding:7px 18px;border-radius:20px;border:1px solid var(--edge);background:var(--card);color:var(--txt2);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;font-family:var(--sans)}
+.filter-btn:hover{border-color:var(--edge2);color:var(--txt)}
+.filter-btn.active{background:var(--filter-active);color:var(--y);border-color:rgba(250,204,21,.25);font-weight:600}
+
+/* GRID */
+.wrap{max-width:var(--w);margin:0 auto;padding:0 24px 80px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:20px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+
+/* CARD */
+.tpl-card{background:var(--card);border:1px solid var(--edge);border-radius:var(--radius);overflow:hidden;transition:all .25s}
+.tpl-card:hover{border-color:var(--edge2)}
+.tpl-head{padding:20px 24px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.tpl-info{flex:1}
+.tpl-info h3{font-size:17px;font-weight:700;color:var(--txt);display:flex;align-items:center;gap:8px;transition:color .3s}
+.tpl-info h3 .emoji{font-size:22px}
+.tpl-info p{font-size:13px;color:var(--txt2);margin-top:4px;line-height:1.5;transition:color .3s}
+.tpl-tag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:4px;background:var(--tag-bg);color:var(--tag-txt);white-space:nowrap}
+.tpl-cmd{margin:0 24px 12px;display:flex;align-items:center;gap:8px;background:var(--code-bg);border:1px solid var(--edge);border-radius:var(--radius-sm);padding:8px 14px;font-family:var(--mono);font-size:12px;transition:border-color .3s}
+.tpl-cmd .prompt{color:var(--g);font-weight:600}
+.tpl-cmd code{color:var(--txt2);flex:1;overflow-x:auto;white-space:nowrap}
+.tpl-cmd .copy-btn{background:none;border:1px solid var(--edge);color:var(--txt3);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;font-family:var(--sans);transition:all .2s;white-space:nowrap}
+.tpl-cmd .copy-btn:hover{border-color:var(--y);color:var(--y)}
+
+/* CODE BLOCK */
+.code-block{background:var(--code-bg);border-top:1px solid var(--edge);transition:border-color .3s}
+.code-bar{display:flex;align-items:center;gap:6px;padding:8px 14px;border-bottom:1px solid var(--edge);background:var(--code-header);transition:border-color .3s}
+.tdot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.code-bar span{font-size:11px;color:var(--txt3);font-family:var(--mono);margin-left:8px;transition:color .3s}
+.code-block pre{padding:18px 20px;font-family:var(--mono);font-size:12.5px;line-height:1.85;overflow-x:auto;white-space:pre;color:#c8c8dc;margin:0}
+
+/* SYNTAX */
+.k{color:var(--p)}.f{color:var(--b)}.s{color:var(--g)}.d{color:var(--y)}.c{color:var(--txt3);font-style:italic}.o{color:var(--txt2)}.n{color:var(--o)}.t{color:var(--r)}.m{color:var(--cyan)}
+
+/* HIDDEN */
+.hidden{display:none!important}
+
+/* FOOTER */
+footer{border-top:1px solid var(--edge);padding:36px 24px;transition:border-color .3s}
+.footer-inner{max-width:var(--w);margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+footer span{font-size:12px;color:var(--txt3);transition:color .3s}
+footer a{color:var(--txt2);text-decoration:none;font-size:12px;transition:color .2s}
+footer a:hover{color:var(--txt)}
+@media(max-width:600px){.footer-inner{flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html"><img src="assets/logo.png" alt="Ludwig">Ludwig</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="docs.html">Docs</a>
+      <a href="examples.html" class="active">Examples</a>
+    </div>
+    <div class="nav-r">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">&#9790;</span></button>
+      <a class="gh-link" href="https://github.com/ludwig-framework/ludwig" target="_blank" rel="noopener noreferrer">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Examples &amp; Templates</h1>
+  <p>Full working projects you can scaffold in one command. Every example runs on desktop in simulation mode &mdash; deploy to hardware with zero code changes.</p>
+</section>
+
+<!-- FILTERS -->
+<div class="filters">
+  <button class="filter-btn active" onclick="filterTemplates('all',this)">All</button>
+  <button class="filter-btn" onclick="filterTemplates('web',this)">Web</button>
+  <button class="filter-btn" onclick="filterTemplates('iot',this)">IoT</button>
+  <button class="filter-btn" onclick="filterTemplates('ai',this)">AI</button>
+</div>
+
+<!-- TEMPLATES -->
+<div class="wrap">
+<div class="grid">
+
+<!-- ═══════════ WEB TEMPLATES ═══════════ -->
+
+<!-- basic -->
+<div class="tpl-card" data-category="web">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>basic</h3>
+      <p>Web app &mdash; the starting point for any Ludwig project.</p>
+    </div>
+    <span class="tpl-tag">Web</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template basic</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>
+
+app = <span class="t">App</span>(<span class="n">name</span>=<span class="s">"My App"</span>)
+
+<span class="d">@app.get</span>(<span class="s">"/"</span>)
+<span class="k">def</span> <span class="f">home</span>(req):
+    <span class="k">return</span> <span class="s">"Hello from Ludwig!"</span>
+
+<span class="d">@app.get</span>(<span class="s">"/api/status"</span>)
+<span class="k">def</span> <span class="f">status</span>(req):
+    <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"ok"</span>}
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    app.<span class="f">run</span>(<span class="n">debug</span>=<span class="n">True</span>)</pre>
+  </div>
+</div>
+
+<!-- api -->
+<div class="tpl-card" data-category="web">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>api</h3>
+      <p>REST API with JSON responses, URL parameters, and database models.</p>
+    </div>
+    <span class="tpl-tag">Web</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template api</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>
+
+app = <span class="t">App</span>(<span class="n">name</span>=<span class="s">"Hello API"</span>)
+
+<span class="d">@app.get</span>(<span class="s">"/"</span>)
+<span class="k">def</span> <span class="f">home</span>(req):
+    <span class="k">return</span> {<span class="s">"message"</span>: <span class="s">"Welcome to Ludwig!"</span>,
+            <span class="s">"version"</span>: <span class="s">"2.0.0"</span>}
+
+<span class="d">@app.get</span>(<span class="s">"/hello/:name"</span>)
+<span class="k">def</span> <span class="f">hello</span>(req):
+    name = req.params[<span class="s">"name"</span>]
+    <span class="k">return</span> {<span class="s">"message"</span>: <span class="s">f"Hi, </span><span class="o">{</span>name<span class="o">}</span><span class="s">!"</span>}
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    app.<span class="f">run</span>(<span class="n">debug</span>=<span class="n">True</span>)</pre>
+  </div>
+</div>
+
+<!-- todo_api -->
+<div class="tpl-card" data-category="web">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>todo_api</h3>
+      <p>Full CRUD REST API with SQLite database and the Model ORM.</p>
+    </div>
+    <span class="tpl-tag">Web</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template todo_api</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> dataclasses <span class="k">import</span> dataclass
+<span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>, <span class="t">Database</span>, <span class="t">Model</span>
+
+app = <span class="t">App</span>(<span class="n">name</span>=<span class="s">"Todo API"</span>)
+db = <span class="t">Database</span>(<span class="s">"todos.db"</span>)
+
+<span class="d">@dataclass</span>
+<span class="k">class</span> <span class="t">Todo</span>(<span class="t">Model</span>):
+    title: <span class="t">str</span>
+    completed: <span class="t">bool</span> = <span class="n">False</span>
+
+<span class="d">@app.get</span>(<span class="s">"/todos"</span>)
+<span class="k">def</span> <span class="f">list_todos</span>(req):
+    todos = <span class="t">Todo</span>.<span class="f">all</span>()
+    <span class="k">return</span> [t.<span class="f">to_dict</span>() <span class="k">for</span> t <span class="k">in</span> todos]
+
+<span class="d">@app.post</span>(<span class="s">"/todos"</span>)
+<span class="k">def</span> <span class="f">create_todo</span>(req):
+    todo = <span class="t">Todo</span>.<span class="f">create</span>(**req.json)
+    <span class="k">return</span> todo.<span class="f">to_dict</span>()
+
+<span class="d">@app.delete</span>(<span class="s">"/todos/:id"</span>)
+<span class="k">def</span> <span class="f">delete_todo</span>(req):
+    todo = <span class="t">Todo</span>.<span class="f">find</span>(<span class="f">int</span>(req.params[<span class="s">"id"</span>]))
+    <span class="k">if not</span> todo:
+        <span class="k">return</span> {<span class="s">"error"</span>: <span class="s">"Not found"</span>}, <span class="n">404</span>
+    todo.<span class="f">delete</span>()
+    <span class="k">return</span> {<span class="s">"deleted"</span>: <span class="n">True</span>}
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    app.<span class="f">run</span>(<span class="n">debug</span>=<span class="n">True</span>)</pre>
+  </div>
+</div>
+
+<!-- web -->
+<div class="tpl-card" data-category="web">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>web</h3>
+      <p>Web app that serves HTML pages directly from route handlers.</p>
+    </div>
+    <span class="tpl-tag">Web</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template web</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>
+
+app = <span class="t">App</span>(<span class="n">name</span>=<span class="s">"Web App"</span>)
+
+<span class="d">@app.get</span>(<span class="s">"/"</span>)
+<span class="k">def</span> <span class="f">home</span>(req):
+    <span class="k">return</span> <span class="s">"""
+    &lt;!DOCTYPE html&gt;
+    &lt;html&gt;
+    &lt;head&gt;&lt;title&gt;Ludwig Web App&lt;/title&gt;&lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Hello Ludwig!&lt;/h1&gt;
+        &lt;p&gt;Your web app is running.&lt;/p&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;
+    """</span>
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    app.<span class="f">run</span>(<span class="n">debug</span>=<span class="n">True</span>)</pre>
+  </div>
+</div>
+
+<!-- dashboard -->
+<div class="tpl-card" data-category="web">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>dashboard</h3>
+      <p>Stats dashboard with API endpoints and HTML frontend.</p>
+    </div>
+    <span class="tpl-tag">Web</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template dashboard</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>, route
+
+app = <span class="t">App</span>()
+
+<span class="d">@route</span>(<span class="s">"/"</span>)
+<span class="k">def</span> <span class="f">dashboard</span>():
+    <span class="k">return</span> <span class="s">"""
+    &lt;!DOCTYPE html&gt;
+    &lt;html&gt;
+    &lt;head&gt;&lt;title&gt;Dashboard&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: system-ui; margin: 40px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .card { background: white; padding: 24px; border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .stat { font-size: 32px; font-weight: bold; }
+    &lt;/style&gt;&lt;/head&gt;
+    &lt;body&gt;&lt;h1&gt;Dashboard&lt;/h1&gt;
+    &lt;div class="grid"&gt;
+        &lt;div class="card"&gt;&lt;div class="stat"&gt;1,234&lt;/div&gt;Users&lt;/div&gt;
+        &lt;div class="card"&gt;&lt;div class="stat"&gt;567&lt;/div&gt;Orders&lt;/div&gt;
+        &lt;div class="card"&gt;&lt;div class="stat"&gt;$45,678&lt;/div&gt;Revenue&lt;/div&gt;
+        &lt;div class="card"&gt;&lt;div class="stat"&gt;+12.5%&lt;/div&gt;Growth&lt;/div&gt;
+    &lt;/div&gt;&lt;/body&gt;&lt;/html&gt;
+    """</span>
+
+<span class="d">@route</span>(<span class="s">"/api/stats"</span>)
+<span class="k">def</span> <span class="f">api_stats</span>():
+    <span class="k">return</span> {<span class="s">"users"</span>: <span class="n">1234</span>, <span class="s">"orders"</span>: <span class="n">567</span>, <span class="s">"revenue"</span>: <span class="n">45678.90</span>}
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    app.<span class="f">run</span>(<span class="n">port</span>=<span class="n">8000</span>)</pre>
+  </div>
+</div>
+
+<!-- ═══════════ IOT TEMPLATES ═══════════ -->
+
+<!-- robot -->
+<div class="tpl-card" data-category="iot">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>robot</h3>
+      <p>Obstacle-avoiding robot car with ultrasonic sensor and differential drive.</p>
+    </div>
+    <span class="tpl-tag">IoT</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template robot</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Robot</span>, <span class="t">Sensor</span>
+
+robot = <span class="t">Robot</span>.<span class="f">car</span>(
+    <span class="n">left</span>={<span class="s">"forward"</span>: <span class="n">17</span>, <span class="s">"backward"</span>: <span class="n">18</span>, <span class="s">"enable"</span>: <span class="n">12</span>},
+    <span class="n">right</span>={<span class="s">"forward"</span>: <span class="n">22</span>, <span class="s">"backward"</span>: <span class="n">23</span>, <span class="s">"enable"</span>: <span class="n">13</span>},
+)
+
+robot.<span class="f">add_sensor</span>(<span class="s">"front"</span>, <span class="t">Sensor</span>.<span class="f">ultrasonic</span>(<span class="n">trigger</span>=<span class="n">24</span>, <span class="n">echo</span>=<span class="n">25</span>))
+
+<span class="d">@robot.on_obstacle</span>
+<span class="k">def</span> <span class="f">avoid_obstacle</span>():
+    robot.<span class="f">stop</span>()
+    robot.<span class="f">backward</span>(<span class="n">duration</span>=<span class="n">0.5</span>)
+    robot.<span class="f">turn</span>(<span class="n">90</span>)
+    robot.<span class="f">forward</span>()
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    robot.<span class="f">forward</span>(<span class="n">speed</span>=<span class="n">50</span>)
+    robot.<span class="f">run</span>(<span class="n">obstacle_distance</span>=<span class="n">20</span>)</pre>
+  </div>
+</div>
+
+<!-- alarm -->
+<div class="tpl-card" data-category="iot">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>alarm</h3>
+      <p>Home security alarm with motion sensors, door/window sensors, and siren.</p>
+    </div>
+    <span class="tpl-tag">IoT</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template alarm</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Alarm</span>, <span class="t">Sensor</span>
+
+alarm = <span class="t">Alarm</span>()
+
+alarm.<span class="f">add</span>(<span class="t">Sensor</span>.<span class="f">motion</span>(<span class="n">pin</span>=<span class="n">4</span>), <span class="n">zone</span>=<span class="s">"living_room"</span>)
+alarm.<span class="f">add</span>(<span class="t">Sensor</span>.<span class="f">door</span>(<span class="n">pin</span>=<span class="n">5</span>), <span class="n">zone</span>=<span class="s">"front_door"</span>)
+alarm.<span class="f">add</span>(<span class="t">Sensor</span>.<span class="f">window</span>(<span class="n">pin</span>=<span class="n">6</span>), <span class="n">zone</span>=<span class="s">"bedroom"</span>)
+
+alarm.<span class="f">siren</span>(<span class="n">pin</span>=<span class="n">17</span>)
+
+<span class="d">@alarm.on_triggered</span>
+<span class="k">def</span> <span class="f">handle_alert</span>(zone, sensor):
+    <span class="f">print</span>(<span class="s">f"ALERT: </span><span class="o">{</span>zone<span class="o">}</span><span class="s">!"</span>)
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    alarm.<span class="f">arm</span>()
+    alarm.<span class="f">run</span>()</pre>
+  </div>
+</div>
+
+<!-- smart-home -->
+<div class="tpl-card" data-category="iot">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>smart-home</h3>
+      <p>Home automation with rooms, dimmable lights, motion sensors, and scheduled actions.</p>
+    </div>
+    <span class="tpl-tag">IoT</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template smart-home</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Home</span>, <span class="t">Light</span>, <span class="t">Sensor</span>
+
+home = <span class="t">Home</span>()
+
+living = home.<span class="f">room</span>(<span class="s">"living_room"</span>)
+living.<span class="f">add</span>(<span class="t">Light</span>(<span class="n">pin</span>=<span class="n">17</span>, <span class="n">name</span>=<span class="s">"ceiling"</span>, <span class="n">dimmable</span>=<span class="n">True</span>))
+living.<span class="f">add</span>(<span class="t">Sensor</span>.<span class="f">motion</span>(<span class="n">pin</span>=<span class="n">4</span>))
+
+bedroom = home.<span class="f">room</span>(<span class="s">"bedroom"</span>)
+bedroom.<span class="f">add</span>(<span class="t">Light</span>(<span class="n">pin</span>=<span class="n">18</span>, <span class="n">name</span>=<span class="s">"main"</span>))
+
+<span class="d">@home.at</span>(<span class="s">"sunset"</span>)
+<span class="k">def</span> <span class="f">evening_mode</span>():
+    living.<span class="f">light</span>(<span class="s">"ceiling"</span>).<span class="f">on</span>()
+    living.<span class="f">light</span>(<span class="s">"ceiling"</span>).<span class="f">brightness</span>(<span class="n">70</span>)
+
+<span class="d">@home.at</span>(<span class="s">"23:00"</span>)
+<span class="k">def</span> <span class="f">bedtime</span>():
+    home.<span class="f">all_lights_off</span>()
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    home.<span class="f">run</span>()</pre>
+  </div>
+</div>
+
+<!-- garden -->
+<div class="tpl-card" data-category="iot">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>garden</h3>
+      <p>Automated plant watering with moisture sensors and scheduled checks.</p>
+    </div>
+    <span class="tpl-tag">IoT</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template garden</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Garden</span>
+
+garden = <span class="t">Garden</span>()
+
+garden.<span class="f">add_plant</span>(<span class="s">"tomatoes"</span>,
+    <span class="n">moisture_pin</span>=<span class="n">0</span>, <span class="n">pump_pin</span>=<span class="n">17</span>, <span class="n">threshold</span>=<span class="n">30</span>)
+garden.<span class="f">add_plant</span>(<span class="s">"herbs"</span>,
+    <span class="n">moisture_pin</span>=<span class="n">1</span>, <span class="n">pump_pin</span>=<span class="n">18</span>, <span class="n">threshold</span>=<span class="n">40</span>)
+
+<span class="d">@garden.check_every</span>(<span class="n">hours</span>=<span class="n">1</span>)
+<span class="k">def</span> <span class="f">hourly_check</span>(plant):
+    <span class="k">if</span> plant.needs_water:
+        plant.<span class="f">water</span>(<span class="n">seconds</span>=<span class="n">10</span>)
+        garden.<span class="f">log</span>(<span class="s">f"Watered </span><span class="o">{</span>plant.name<span class="o">}</span><span class="s">"</span>)
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    garden.<span class="f">run</span>()</pre>
+  </div>
+</div>
+
+<!-- weather-station -->
+<div class="tpl-card" data-category="iot">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>weather-station</h3>
+      <p>IoT weather monitoring with temperature, humidity, and live web dashboard.</p>
+    </div>
+    <span class="tpl-tag">IoT</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template weather-station</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>, route
+<span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Sensor</span>
+
+app = <span class="t">App</span>()
+
+temperature = <span class="t">Sensor</span>(<span class="s">"dht22"</span>, <span class="n">pin</span>=<span class="n">4</span>)
+humidity = <span class="t">Sensor</span>(<span class="s">"dht22"</span>, <span class="n">pin</span>=<span class="n">4</span>, <span class="n">reading</span>=<span class="s">"humidity"</span>)
+
+<span class="d">@route</span>(<span class="s">"/readings"</span>)
+<span class="k">def</span> <span class="f">get_readings</span>():
+    <span class="k">return</span> {
+        <span class="s">"temperature"</span>: temperature.<span class="f">read</span>(),
+        <span class="s">"humidity"</span>: humidity.<span class="f">read</span>()
+    }
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    app.<span class="f">run</span>(<span class="n">port</span>=<span class="n">8000</span>)</pre>
+  </div>
+</div>
+
+<!-- door-lock -->
+<div class="tpl-card" data-category="iot">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>door-lock</h3>
+      <p>Smart door lock with PIN entry, web UI, and relay-controlled locking.</p>
+    </div>
+    <span class="tpl-tag">IoT</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template door-lock</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>
+<span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Relay</span>
+
+app = <span class="t">App</span>()
+lock = <span class="t">Relay</span>(<span class="n">pin</span>=<span class="n">11</span>)
+PIN = <span class="s">"1234"</span>
+
+<span class="d">@app.route</span>(<span class="s">"/status"</span>)
+<span class="k">def</span> <span class="f">status</span>(req):
+    <span class="k">return</span> {<span class="s">"locked"</span>: <span class="k">not</span> lock.<span class="f">is_on</span>()}
+
+<span class="d">@app.route</span>(<span class="s">"/unlock"</span>, <span class="n">methods</span>=[<span class="s">"POST"</span>])
+<span class="k">def</span> <span class="f">unlock</span>(req):
+    <span class="k">if</span> req.json.<span class="f">get</span>(<span class="s">"pin"</span>) == PIN:
+        lock.<span class="f">on</span>()
+        <span class="k">return</span> {<span class="s">"success"</span>: <span class="n">True</span>, <span class="s">"message"</span>: <span class="s">"Unlocked"</span>}
+    <span class="k">return</span> {<span class="s">"success"</span>: <span class="n">False</span>, <span class="s">"message"</span>: <span class="s">"Invalid PIN"</span>}
+
+<span class="d">@app.route</span>(<span class="s">"/lock"</span>, <span class="n">methods</span>=[<span class="s">"POST"</span>])
+<span class="k">def</span> <span class="f">do_lock</span>(req):
+    lock.<span class="f">off</span>()
+    <span class="k">return</span> {<span class="s">"success"</span>: <span class="n">True</span>}
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    app.<span class="f">run</span>(<span class="n">port</span>=<span class="n">8000</span>)</pre>
+  </div>
+</div>
+
+<!-- led -->
+<div class="tpl-card" data-category="iot">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>led</h3>
+      <p>RGB LED strip controller with color picker, scenes, and effects.</p>
+    </div>
+    <span class="tpl-tag">IoT</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template led</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>
+<span class="k">from</span> ludwig.iot <span class="k">import</span> <span class="t">Light</span>
+
+app = <span class="t">App</span>()
+led = <span class="t">Light</span>(<span class="n">pin</span>=<span class="n">18</span>, <span class="n">type</span>=<span class="s">"ws2812b"</span>, <span class="n">count</span>=<span class="n">60</span>)
+
+<span class="d">@app.route</span>(<span class="s">"/set"</span>, <span class="n">methods</span>=[<span class="s">"POST"</span>])
+<span class="k">def</span> <span class="f">set_color</span>(req):
+    data = req.json
+    led.<span class="f">set_color</span>(data[<span class="s">"r"</span>], data[<span class="s">"g"</span>], data[<span class="s">"b"</span>])
+    <span class="k">return</span> {<span class="s">"success"</span>: <span class="n">True</span>}
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    app.<span class="f">run</span>(<span class="n">port</span>=<span class="n">8000</span>)</pre>
+  </div>
+</div>
+
+<!-- ═══════════ AI TEMPLATES ═══════════ -->
+
+<!-- assistant -->
+<div class="tpl-card" data-category="ai">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>assistant</h3>
+      <p>Voice assistant with wake word detection, GPT-4o, and text-to-speech.</p>
+    </div>
+    <span class="tpl-tag">AI</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template assistant</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig.ai <span class="k">import</span> <span class="t">Assistant</span>
+
+assistant = <span class="t">Assistant</span>(
+    <span class="n">name</span>=<span class="s">"Ludwig"</span>,
+    <span class="n">model</span>=<span class="s">"gpt-4o"</span>,
+    <span class="n">voice</span>=<span class="s">"alloy"</span>,
+)
+
+<span class="d">@assistant.on_wake</span>(<span class="s">"Hey Ludwig"</span>)
+<span class="k">def</span> <span class="f">handle_wake</span>():
+    command = assistant.<span class="f">listen</span>()
+    response = assistant.<span class="f">think</span>(command)
+    assistant.<span class="f">speak</span>(response)
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    assistant.<span class="f">run</span>()</pre>
+  </div>
+</div>
+
+<!-- vision -->
+<div class="tpl-card" data-category="ai">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>vision</h3>
+      <p>Real-time object detection with YOLO and live camera feed.</p>
+    </div>
+    <span class="tpl-tag">AI</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template vision</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig.ai <span class="k">import</span> <span class="t">Vision</span>
+
+vision = <span class="t">Vision</span>(<span class="n">camera</span>=<span class="n">0</span>, <span class="n">model</span>=<span class="s">"yolo"</span>)
+
+<span class="d">@vision.on_detect</span>(<span class="s">"person"</span>)
+<span class="k">def</span> <span class="f">person_detected</span>(detection):
+    <span class="f">print</span>(<span class="s">f"Person at </span><span class="o">{</span>detection.center<span class="o">}</span><span class="s"> "</span>
+          <span class="s">f"(</span><span class="o">{</span>detection.confidence:<span class="s">.2%</span><span class="o">}</span><span class="s">)"</span>)
+
+<span class="d">@vision.on_detect</span>(<span class="s">"cat"</span>)
+<span class="k">def</span> <span class="f">cat_spotted</span>(detection):
+    <span class="f">print</span>(<span class="s">"Cat spotted!"</span>)
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    vision.<span class="f">run</span>(<span class="n">display</span>=<span class="n">True</span>)</pre>
+  </div>
+</div>
+
+<!-- chatbot -->
+<div class="tpl-card" data-category="ai">
+  <div class="tpl-head">
+    <div class="tpl-info">
+      <h3>chatbot</h3>
+      <p>AI chatbot with conversation history, powered by OpenAI.</p>
+    </div>
+    <span class="tpl-tag">AI</span>
+  </div>
+  <div class="tpl-cmd"><span class="prompt">$</span><code>ludwig new my-app --template chatbot</code><button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+  <div class="code-block">
+    <div class="code-bar"><span class="tdot" style="background:#ff5f57"></span><span class="tdot" style="background:#febc2e"></span><span class="tdot" style="background:#28c840"></span><span>app.py</span></div>
+    <pre><span class="k">from</span> ludwig <span class="k">import</span> <span class="t">App</span>, route
+<span class="k">from</span> ludwig.ai <span class="k">import</span> <span class="t">Assistant</span>
+
+app = <span class="t">App</span>()
+assistant = <span class="t">Assistant</span>(<span class="n">name</span>=<span class="s">"Bot"</span>, <span class="n">model</span>=<span class="s">"gpt-4o-mini"</span>)
+
+<span class="d">@route</span>(<span class="s">"/chat"</span>, <span class="n">methods</span>=[<span class="s">"POST"</span>])
+<span class="k">def</span> <span class="f">chat</span>(message: <span class="t">str</span>):
+    reply = assistant.<span class="f">ask</span>(message)
+    <span class="k">return</span> {<span class="s">"reply"</span>: reply}
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    app.<span class="f">run</span>(<span class="n">port</span>=<span class="n">8000</span>)</pre>
+  </div>
+</div>
+
+</div><!-- /grid -->
+</div><!-- /wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span>Ludwig v2.0.0 &middot; MIT License</span>
+    <span>
+      <a href="https://github.com/ludwig-framework/ludwig">GitHub</a> &middot;
+      <a href="https://github.com/ludwig-framework/ludwig/issues">Issues</a> &middot;
+      <a href="https://github.com/ludwig-framework/ludwig/blob/main/CONTRIBUTING.md">Contributing</a> &middot;
+      <a href="docs.html">Docs</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+/* Theme */
+function toggleTheme(){
+  var h=document.documentElement,n=h.getAttribute('data-theme')==='dark'?'light':'dark';
+  h.setAttribute('data-theme',n);
+  document.getElementById('themeIcon').textContent=n==='dark'?'&#9790;':'&#9728;';
+  localStorage.setItem('ludwig-theme',n);
+}
+(function(){
+  var s=localStorage.getItem('ludwig-theme');
+  if(s){document.documentElement.setAttribute('data-theme',s);document.getElementById('themeIcon').textContent=s==='dark'?'&#9790;':'&#9728;';}
+})();
+
+/* Filter */
+function filterTemplates(cat,btn){
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  document.querySelectorAll('.tpl-card').forEach(function(card){
+    if(cat==='all'||card.getAttribute('data-category')===cat){
+      card.classList.remove('hidden');
+    }else{
+      card.classList.add('hidden');
+    }
+  });
+}
+
+/* Copy command */
+function copyCmd(btn){
+  var code=btn.parentElement.querySelector('code');
+  if(!code)return;
+  var text=code.textContent||code.innerText;
+  navigator.clipboard.writeText(text).then(function(){
+    btn.textContent='Copied!';
+    setTimeout(function(){btn.textContent='Copy'},1200);
+  });
+}
+</script>
+</body>
+</html>

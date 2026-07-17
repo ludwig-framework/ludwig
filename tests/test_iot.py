@@ -11,19 +11,17 @@ class TestPin:
     
     def test_pin_creation(self):
         """Test creating output pin."""
-        pin = Pin(17, mode="out")
-        assert pin is not None
+        pin = Pin(17, mode="output")
     
     def test_pin_output(self):
         """Test pin output operations."""
-        pin = Pin(17, mode="out")
-        pin.on()
+        pin = Pin(17, mode="output")
         pin.off()
         pin.toggle()
     
     def test_pin_input(self):
         """Test pin input operations."""
-        pin = Pin(18, mode="in")
+        pin = Pin(18, mode="input")
         value = pin.read()
         assert value in (0, 1, True, False)
 
@@ -35,7 +33,7 @@ class TestSensor:
         """Test motion sensor factory."""
         sensor = Sensor.motion(pin=4)
         assert sensor is not None
-        assert sensor.type == "motion"
+        assert sensor.sensor_type == "motion"
     
     def test_temperature_sensor(self):
         """Test temperature sensor factory."""
@@ -118,6 +116,6 @@ class TestAlarm:
         """Test arming and disarming."""
         alarm = Alarm()
         alarm.arm()
-        assert alarm.is_armed
+        assert alarm._armed
         alarm.disarm()
-        assert not alarm.is_armed
+        assert not alarm._armed

@@ -149,6 +149,11 @@ class Alarm:
         """Handler for disarming."""
         return self.on("disarmed")
     
+    @property
+    def is_armed(self) -> bool:
+        """Check if alarm is armed."""
+        return self._armed
+    
     # === Notifications ===
     
     def send_sms(self, phone: str, message: str):

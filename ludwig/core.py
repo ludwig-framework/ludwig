@@ -109,6 +109,14 @@ class App:
         """Register a POST route."""
         return self.route(path, ["POST"])
     
+    def put(self, path: str):
+        """Register a PUT route."""
+        return self.route(path, ["PUT"])
+    
+    def delete(self, path: str):
+        """Register a DELETE route."""
+        return self.route(path, ["DELETE"])
+    
     def api(self, path: str):
         """Register a REST API endpoint."""
         return self.route(path, ["GET", "POST", "PUT", "DELETE"])
@@ -216,5 +224,49 @@ class App:
     async def _event_loop(self):
         """Main event loop."""
         import asyncio
+        import time
+        from datetime import datetime
+        
+        last_run = {}
+        
         while True:
-            await asyncio.sleep(0.1)
+            now = time.time()
+            now_str = datetime.now().strftime("%H:%M")
+            
+            # Process interval-based tasks
+            for task in self._tasks:
+                if isinstance(task, tuple) and len(task) == 2:
+                    interval_spec, func = task
+                    
+                    if interval_spec.startswith("at:"):
+                        # Time-based: at:sunset, at:08:30
+                        time_target = interval_spec[3:]
+                        if time_target == now_str:
+                            key = id(func)
+                            if key not in last_run or now - last_run[key] > 60:
+                                func()
+                                last_run[key] = now
+                    else:
+                        # Interval-based: "1 hour", "30 minutes"
+                        interval_seconds = self._parse_interval(interval_spec)
+                        key = id(func)
+                        if key not in last_run or now - last_run[key] >= interval_seconds:
+                            func()
+                            last_run[key] = now
+            
+            await asyncio.sleep(1)
+    
+    def _parse_interval(self, interval: str) -> int:
+        """Parse interval string to seconds."""
+        parts = interval.lower().split()
+        value = int(parts[0])
+        unit = parts[1] if len(parts) > 1 else "seconds"
+        
+        multipliers = {
+            "second": 1, "seconds": 1,
+            "minute": 60, "minutes": 60,
+            "hour": 3600, "hours": 3600,
+            "day": 86400, "days": 86400,
+        }
+        
+        return value * multipliers.get(unit, 1)

@@ -3,7 +3,7 @@ Ludwig Database - Simple database abstraction
 """
 
 from typing import Any, Optional, Type, TypeVar
-from dataclasses import dataclass, field, fields, asdict
+from dataclasses import dataclass, field, fields
 import json
 import sqlite3
 import os
@@ -239,12 +239,12 @@ class QueryBuilder:
         return cursor.rowcount
 
 
-@dataclass
 class Model:
     """
     Base model class for ORM-style data access.
     
-    Example:
+    Subclasses should be decorated with @dataclass:
+    
         @dataclass
         class User(Model):
             name: str
@@ -268,7 +268,7 @@ class Model:
         user.delete()
     """
     
-    id: Optional[int] = field(default=None)
+    id: int = None
     
     @classmethod
     def table_name(cls) -> str:
@@ -318,26 +318,42 @@ class Model:
         """Get all records."""
         cls._ensure_table()
         rows = cls._db().table(cls.table_name()).get()
-        return [cls(**row) for row in rows]
+        instances = []
+        for row in rows:
+            row.pop("id", None)
+            instance = cls(**row)
+            instances.append(instance)
+        return instances
     
     @classmethod
     def find(cls: Type[T], id: int) -> Optional[T]:
         """Find by ID."""
         cls._ensure_table()
         row = cls._db().table(cls.table_name()).where("id", id).first()
-        return cls(**row) if row else None
+        if row:
+            row.pop("id", None)
+            instance = cls(**row)
+            instance.id = id
+            return instance
+        return None
     
     @classmethod
     def where(cls: Type[T], column: str, operator: str = "=", value: Any = None) -> list[T]:
         """Query with conditions."""
         cls._ensure_table()
         rows = cls._db().table(cls.table_name()).where(column, operator, value).get()
-        return [cls(**row) for row in rows]
+        instances = []
+        for row in rows:
+            row_id = row.pop("id", None)
+            instance = cls(**row)
+            instance.id = row_id
+            instances.append(instance)
+        return instances
     
     @classmethod
-    def create(cls: Type[T], **data) -> T:
+    def create(cls: Type[T], **kwargs) -> T:
         """Create and save a new record."""
-        instance = cls(**data)
+        instance = cls(**kwargs)
         instance.save()
         return instance
     
@@ -345,8 +361,8 @@ class Model:
         """Save the model (insert or update)."""
         self._ensure_table()
         
-        data = asdict(self)
-        model_id = data.pop("id")
+        data = {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
+        model_id = data.pop("id", None)
         
         if model_id:
             # Update
@@ -364,8 +380,11 @@ class Model:
     
     def to_dict(self) -> dict:
         """Convert to dictionary."""
-        return asdict(self)
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
     
     def to_json(self) -> str:
         """Convert to JSON."""
         return json.dumps(self.to_dict())
+    
+    def __repr__(self):
+        return f"{self.__class__.__name__}(id={self.id})"

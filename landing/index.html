@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ludwig — Simple Python for Web, IoT, and AI</title>
+  <meta name="description" content="Ludwig is a Python framework for building Web APIs, IoT systems, and AI applications with zero core dependencies.">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <style>
+    /* ========== CSS RESET & VARIABLES ========== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #07070a;
+      --bg-card: #0f0f15;
+      --bg-card-hover: #16161f;
+      --bg-elevated: #111118;
+      --bg-input: #0c0c12;
+      --border: #1e1e2a;
+      --border-subtle: #161622;
+      --text: #e8e8ed;
+      --text-secondary: #8b8b9e;
+      --text-muted: #5a5a70;
+      --accent: #facc15;
+      --accent-dim: rgba(250, 204, 21, 0.12);
+      --accent-hover: #fde047;
+      --green: #34d399;
+      --green-dim: rgba(52, 211, 153, 0.12);
+      --purple: #c084fc;
+      --purple-dim: rgba(192, 132, 252, 0.12);
+      --blue: #818cf8;
+      --blue-dim: rgba(129, 140, 248, 0.12);
+      --pink: #fb7185;
+      --pink-dim: rgba(251, 113, 133, 0.12);
+      --orange: #fb923c;
+      --orange-dim: rgba(251, 146, 60, 0.12);
+      --cyan: #22d3ee;
+      --cyan-dim: rgba(34, 211, 238, 0.12);
+      --code-bg: #0a0a10;
+      --nav-bg: rgba(7, 7, 10, 0.8);
+      --shadow: 0 0 0 1px var(--border);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+      --max-width: 1200px;
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] {
+      --bg: #fafafa;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f5f5f5;
+      --bg-elevated: #f0f0f3;
+      --bg-input: #f0f0f3;
+      --border: #e0e0e6;
+      --border-subtle: #eaeaf0;
+      --text: #111118;
+      --text-secondary: #5a5a70;
+      --text-muted: #8b8b9e;
+      --accent: #ca8a04;
+      --accent-dim: rgba(202, 138, 4, 0.08);
+      --accent-hover: #a16207;
+      --code-bg: #f5f5f8;
+      --nav-bg: rgba(250, 250, 250, 0.85);
+      --shadow: 0 0 0 1px var(--border);
+      --green-dim: rgba(52, 211, 153, 0.08);
+      --purple-dim: rgba(192, 132, 252, 0.08);
+      --blue-dim: rgba(129, 140, 248, 0.08);
+      --pink-dim: rgba(251, 113, 133, 0.08);
+      --orange-dim: rgba(251, 146, 60, 0.08);
+      --cyan-dim: rgba(34, 211, 238, 0.08);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* ========== UTILITIES ========== */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+    }
+
+    .accent {
+      color: var(--accent);
+    }
+
+    .green { color: var(--green); }
+    .purple { color: var(--purple); }
+    .blue { color: var(--blue); }
+    .pink { color: var(--pink); }
+    .orange { color: var(--orange); }
+    .cyan { color: var(--cyan); }
+
+    .dim-accent { background: var(--accent-dim); color: var(--accent); }
+    .dim-green { background: var(--green-dim); color: var(--green); }
+    .dim-purple { background: var(--purple-dim); color: var(--purple); }
+    .dim-blue { background: var(--blue-dim); color: var(--blue); }
+    .dim-pink { background: var(--pink-dim); color: var(--pink); }
+    .dim-orange { background: var(--orange-dim); color: var(--orange); }
+    .dim-cyan { background: var(--cyan-dim); color: var(--cyan); }
+
+    /* ========== ANIMATIONS ========== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ========== NAVIGATION ========== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      height: 64px;
+    }
+
+    .nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .nav-brand img {
+      height: 32px;
+      width: 32px;
+      border-radius: 6px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-links a,
+    .nav-links button {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      transition: color var(--transition), background var(--transition);
+    }
+
+    .nav-links a:hover,
+    .nav-links button:hover {
+      color: var(--text);
+      background: var(--bg-card);
+    }
+
+    .nav-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-github svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      transition: color var(--transition), background var(--transition);
+    }
+
+    .theme-toggle:hover {
+      color: var(--text);
+      background: var(--bg-card);
+    }
+
+    .theme-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    [data-theme="dark"] .icon-sun { display: none; }
+    [data-theme="dark"] .icon-moon { display: block; }
+    [data-theme="light"] .icon-sun { display: block; }
+    [data-theme="light"] .icon-moon { display: none; }
+
+    /* ========== HERO ========== */
+    .hero {
+      padding: 140px 0 80px;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 5.5vw, 64px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .hero-title.visible {
+      animation: bounce-float 4s ease-in-out infinite 0.8s;
+    }
+
+    @keyframes bounce-float {
+      0%, 100% { transform: translateY(0); }
+      25% { transform: translateY(-6px); }
+      50% { transform: translateY(0); }
+      75% { transform: translateY(-3px); }
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(250, 204, 21, 0.15);
+      margin-bottom: 32px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero h1 {
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2.2vw, 20px);
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 64px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #07070a;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-muted);
+      transform: translateY(-1px);
+    }
+
+    /* Terminal mockup */
+    .terminal {
+      max-width: 620px;
+      margin: 0 auto;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.red { background: #ff5f57; }
+    .terminal-dot.yellow { background: #febc2e; }
+    .terminal-dot.green { background: #28c840; }
+
+    .terminal-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: 8px;
+      font-family: var(--font-mono);
+    }
+
+    .terminal-body {
+      padding: 20px 24px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+    }
+
+    .terminal-body .prompt {
+      color: var(--green);
+    }
+
+    .terminal-body .kw {
+      color: var(--purple);
+    }
+
+    .terminal-body .str {
+      color: var(--accent);
+    }
+
+    .terminal-body .fn {
+      color: var(--blue);
+    }
+
+    .terminal-body .cmt {
+      color: var(--text-muted);
+    }
+
+    .terminal-body .dec {
+      color: var(--pink);
+    }
+
+    /* ========== SECTIONS ========== */
+    section {
+      padding: 100px 0;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      line-height: 1.6;
+    }
+
+    .section-header {
+      margin-bottom: 56px;
+    }
+
+    /* ========== WHY / BENTO GRID ========== */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .bento-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+
+    .bento-card:hover {
+      border-color: var(--text-muted);
+      transform: translateY(-2px);
+    }
+
+    .bento-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .bento-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .bento-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .bento-card .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .tag {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      background: var(--bg);
+    }
+
+    /* ========== CODE SHOWCASE ========== */
+    .code-carousel-wrapper {
+      position: relative;
+    }
+
+    .code-carousel {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding: 4px 0 20px;
+    }
+
+    .code-carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .code-card {
+      flex: 0 0 360px;
+      scroll-snap-align: start;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+
+    .code-card:hover {
+      border-color: var(--text-muted);
+      transform: translateY(-2px);
+    }
+
+    .code-card-header {
+      padding: 16px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .code-card-header span {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .code-card-header .file-name {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .code-card pre {
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .carousel-hint {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ========== HARDWARE ========== */
+    .hw-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .hw-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      text-align: center;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+
+    .hw-card:hover {
+      border-color: var(--text-muted);
+      transform: translateY(-2px);
+    }
+
+    .hw-emoji {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .hw-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .hw-card .hw-features {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      margin-bottom: 14px;
+    }
+
+    .hw-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ========== TEMPLATES ========== */
+    .templates-command {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 20px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 40px;
+      cursor: pointer;
+      transition: border-color var(--transition);
+    }
+
+    .templates-command:hover {
+      border-color: var(--text-muted);
+    }
+
+    .templates-command .ps {
+      color: var(--green);
+      user-select: none;
+    }
+
+    .templates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .tpl-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 16px;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+
+    .tpl-card:hover {
+      border-color: var(--text-muted);
+      transform: translateY(-2px);
+    }
+
+    .tpl-emoji {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .tpl-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .tpl-card p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ========== STATS ========== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* ========== INSTALL CTA ========== */
+    .install-cta {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      text-align: center;
+    }
+
+    .install-cta h2 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+    }
+
+    .install-commands {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .install-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 20px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+
+    .install-row .ps {
+      color: var(--green);
+      user-select: none;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      transition: color var(--transition), background var(--transition);
+      flex-shrink: 0;
+    }
+
+    .copy-btn:hover {
+      color: var(--text);
+      background: var(--bg-card);
+    }
+
+    .copy-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .copy-btn.copied {
+      color: var(--green);
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-left {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--text-secondary);
+      transition: color var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 900px) {
+      .bento-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hw-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .code-card {
+        flex: 0 0 300px;
+      }
+
+      .nav-links a.hide-mobile,
+      .nav-links .nav-github.hide-mobile {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      section {
+        padding: 64px 0;
+      }
+
+      .hero {
+        padding: 120px 0 48px;
+      }
+
+      .hw-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .templates-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .install-cta {
+        padding: 32px 20px;
+      }
+
+      .install-row {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .code-card {
+        flex: 0 0 280px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .nav-links .hide-tablet {
+        display: none;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .templates-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== NAVIGATION ========== -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">
+        <img src="assets/logo.png" alt="Ludwig logo">
+        <span>Ludwig</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="hide-mobile">Home</a>
+        <a href="docs.html" class="hide-tablet">Docs</a>
+        <a href="examples.html" class="hide-tablet">Examples</a>
+        <a href="https://github.com/ludwig-framework/ludwig" class="nav-github hide-mobile" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+          GitHub
+        </a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="fade-up hero-title">Write less. Build more. <br>Run anywhere.</h1>
+      <p class="hero-sub fade-up">Web APIs. Robots. Smart homes. AI assistants.<br>One framework, zero core dependencies, pure Python.</p>
+      <div class="hero-actions fade-up">
+        <a href="docs.html" class="btn btn-primary">
+          Read the Docs
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="8" x2="13" y2="8"></line><polyline points="9 4 13 8 9 12"></polyline></svg>
+        </a>
+        <a href="https://github.com/ludwig-framework/ludwig" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+          Source on GitHub
+        </a>
+      </div>
+      <div class="terminal fade-up">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span class="terminal-title">app.py</span>
+        </div>
+        <div class="terminal-body">
+          <span class="kw">from</span> ludwig <span class="kw">import</span> App, route<br><br>
+          app = <span class="fn">App</span>()<br><br>
+          <span class="dec">@app.<span class="fn">route</span>(<span class="str">"/"</span>)</span><br>
+          <span class="kw">def</span> <span class="fn">hello</span>():<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> {<span class="str">"message"</span>: <span class="str">"Hello from Ludwig"</span>}<br><br>
+          <span class="cmt"># Run: ludwig dev</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ========== WHY ========== -->
+  <section id="why">
+    <div class="container">
+      <div class="section-header fade-up">
+        <div class="section-label">Why Ludwig</div>
+        <h2 class="section-title">Stop gluing libraries together.</h2>
+        <p class="section-sub">One import. One framework. Everything connected.</p>
+      </div>
+      <div class="bento-grid">
+        <div class="bento-card fade-up">
+          <div class="bento-icon dim-blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+          </div>
+          <h3>Web APIs</h3>
+          <p>Build REST APIs with a clean route decorator, automatic JSON responses, and static file serving - no boilerplate needed.</p>
+          <div class="tag-list">
+            <span class="tag">@route</span>
+            <span class="tag">JSON auto-response</span>
+            <span class="tag">Static files</span>
+          </div>
+        </div>
+        <div class="bento-card fade-up">
+          <div class="bento-icon dim-green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
+          </div>
+          <h3>IoT &amp; Robotics</h3>
+          <p>GPIO abstraction, sensor factories, and auto board detection - code once, run on Pi, ESP32, or Arduino.</p>
+          <div class="tag-list">
+            <span class="tag">GPIO abstraction</span>
+            <span class="tag">Sensor factories</span>
+            <span class="tag">Auto board detect</span>
+          </div>
+        </div>
+        <div class="bento-card fade-up">
+          <div class="bento-icon dim-purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5.5 4 7.5L12 21l3-4.5c2-2 4-4.5 4-7.5a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>
+          </div>
+          <h3>AI Built-In</h3>
+          <p>Voice assistant, computer vision, and natural language automation - first-class AI without the complexity.</p>
+          <div class="tag-list">
+            <span class="tag">Voice assistant</span>
+            <span class="tag">Computer vision</span>
+            <span class="tag">NL automation</span>
+          </div>
+        </div>
+        <div class="bento-card fade-up">
+          <div class="bento-icon dim-orange">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          </div>
+          <h3>One Database</h3>
+          <p>The Model ORM and Query Builder work with SQLite out of the box and PostgreSQL when you need to scale.</p>
+          <div class="tag-list">
+            <span class="tag">Model ORM</span>
+            <span class="tag">Query Builder</span>
+            <span class="tag">SQLite + PostgreSQL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ========== CODE SHOWCASE ========== -->
+  <section id="examples">
+    <div class="container">
+      <div class="section-header fade-up">
+        <div class="section-label">Code Showcase</div>
+        <h2 class="section-title">See it in action.</h2>
+        <p class="section-sub">Real examples from Ludwig templates - idiomatic Python, zero boilerplate.</p>
+      </div>
+      <div class="code-carousel-wrapper fade-up">
+        <div class="code-carousel" id="codeCarousel">
+          <!-- Card 1: API -->
+          <div class="code-card">
+            <div class="code-card-header">
+              <span class="dim-blue">Web API</span>
+              <span class="file-name">app.py</span>
+            </div>
+            <pre><span class="kw">from</span> ludwig <span class="kw">import</span> App
+
+app = <span class="fn">App</span>()
+
+<span class="dec">@app.<span class="fn">route</span>(<span class="str">"/api/greet"</span>)</span>
+<span class="kw">def</span> <span class="fn">greet</span>(name: <span class="fn">str</span>):
+    <span class="kw">return</span> {<span class="str">"hello"</span>: name}</pre>
+          </div>
+          <!-- Card 2: Robot Car -->
+          <div class="code-card">
+            <div class="code-card-header">
+              <span class="dim-green">Robot Car</span>
+              <span class="file-name">robot.py</span>
+            </div>
+            <pre><span class="kw">from</span> ludwig <span class="kw">import</span> Robot, Motor
+
+car = <span class="fn">Robot</span>()
+left = <span class="fn">Motor</span>(pin_a=<span class="str">17</span>, pin_b=<span class="str">27</span>)
+right = <span class="fn">Motor</span>(pin_a=<span class="str">22</span>, pin_b=<span class="str">23</span>)
+
+car.<span class="fn">drive</span>(left, right, speed=<span class="str">80</span>)</pre>
+          </div>
+          <!-- Card 3: Smart Home -->
+          <div class="code-card">
+            <div class="code-card-header">
+              <span class="dim-purple">Smart Home</span>
+              <span class="file-name">home.py</span>
+            </div>
+            <pre><span class="kw">from</span> ludwig <span class="kw">import</span> Home, Light, Sensor
+
+home = <span class="fn">Home</span>()
+light = <span class="fn">Light</span>(pin=<span class="str">18</span>)
+motion = Sensor.<span class="fn">motion</span>(pin=<span class="str">24</span>)
+
+<span class="kw">if</span> motion.<span class="fn">detect</span>():
+    light.<span class="fn">on</span>()</pre>
+          </div>
+          <!-- Card 4: Voice Assistant -->
+          <div class="code-card">
+            <div class="code-card-header">
+              <span class="dim-cyan">Voice Assistant</span>
+              <span class="file-name">assistant.py</span>
+            </div>
+            <pre><span class="kw">from</span> ludwig <span class="kw">import</span> Assistant
+
+bot = <span class="fn">Assistant</span>()
+
+<span class="dec">@bot.<span class="fn">on</span>(<span class="str">"lights on"</span>)</span>
+<span class="kw">def</span> <span class="fn">lights_on</span>():
+    home.lights.<span class="fn">on</span>()
+
+bot.<span class="fn">listen</span>()</pre>
+          </div>
+          <!-- Card 5: Garden -->
+          <div class="code-card">
+            <div class="code-card-header">
+              <span class="dim-green">Garden</span>
+              <span class="file-name">garden.py</span>
+            </div>
+            <pre><span class="kw">from</span> ludwig <span class="kw">import</span> Garden, Sensor, Pin
+
+garden = <span class="fn">Garden</span>()
+moisture = Sensor.<span class="fn">moisture</span>(pin=<span class="str">34</span>)
+pump = <span class="fn">Pin</span>(<span class="str">25</span>, output=<span class="str">True</span>)
+
+<span class="kw">if</span> moisture.<span class="fn">read</span>() &lt; <span class="str">30</span>:
+    pump.<span class="fn">on</span>()</pre>
+          </div>
+        </div>
+        <div class="carousel-hint">&larr; Scroll to explore &rarr;</div>
+      </div>
+    </div>
+  </section>
+  <!-- ========== HARDWARE ========== -->
+  <section id="hardware">
+    <div class="container">
+      <div class="section-header fade-up">
+        <div class="section-label">Hardware</div>
+        <h2 class="section-title">Write on your laptop.<br>Deploy to Pi.</h2>
+        <p class="section-sub">Auto-detect your board and switch seamlessly from simulation to production.</p>
+      </div>
+      <div class="hw-grid fade-up">
+        <div class="hw-card">
+          <h3>Raspberry Pi</h3>
+          <div class="hw-features">GPIO &middot; I2C &middot; SPI &middot; PWM</div>
+          <span class="hw-badge dim-green">Full Support</span>
+        </div>
+        <div class="hw-card">
+          <h3>ESP32</h3>
+          <div class="hw-features">GPIO &middot; I2C &middot; SPI &middot; PWM</div>
+          <span class="hw-badge dim-green">Full Support</span>
+        </div>
+        <div class="hw-card">
+          <h3>Arduino</h3>
+          <div class="hw-features">GPIO &middot; PWM via serial</div>
+          <span class="hw-badge dim-orange">Partial</span>
+        </div>
+        <div class="hw-card">
+          <h3>Desktop</h3>
+          <div class="hw-features">Full simulation mode</div>
+          <span class="hw-badge dim-cyan">Simulated</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ========== TEMPLATES ========== -->
+  <section id="templates">
+    <div class="container">
+      <div class="section-header fade-up">
+        <div class="section-label">Templates</div>
+        <h2 class="section-title">One command. Full project.</h2>
+        <p class="section-sub">14 starter templates for every domain - from simple APIs to AI assistants.</p>
+      </div>
+      <div class="fade-up">
+        <div class="templates-command" id="tplCommand" title="Click to copy">
+          <span class="ps">$</span>
+          <span>ludwig new my-app --template api</span>
+        </div>
+      </div>
+      <div class="templates-grid fade-up">
+        <div class="tpl-card">
+          <h4>basic</h4>
+          <p>Minimal starter to get going fast</p>
+        </div>
+        <div class="tpl-card">
+          <h4>api</h4>
+          <p>REST API with routes and JSON</p>
+        </div>
+        <div class="tpl-card">
+          <h4>web</h4>
+          <p>Full web app with static files</p>
+        </div>
+        <div class="tpl-card">
+          <h4>robot</h4>
+          <p>Robot car with motor control</p>
+        </div>
+        <div class="tpl-card">
+          <h4>alarm</h4>
+          <p>Motion-triggered security alarm</p>
+        </div>
+        <div class="tpl-card">
+          <h4>smart-home</h4>
+          <p>Lights, sensors, and automation</p>
+        </div>
+        <div class="tpl-card">
+          <h4>garden</h4>
+          <p>Automated watering and soil data</p>
+        </div>
+        <div class="tpl-card">
+          <h4>assistant</h4>
+          <p>Voice-activated AI assistant</p>
+        </div>
+        <div class="tpl-card">
+          <h4>vision</h4>
+          <p>Computer vision and detection</p>
+        </div>
+        <div class="tpl-card">
+          <h4>dashboard</h4>
+          <p>Live data dashboard with charts</p>
+        </div>
+        <div class="tpl-card">
+          <h4>chatbot</h4>
+          <p>AI chatbot with conversation flow</p>
+        </div>
+        <div class="tpl-card">
+          <h4>weather-station</h4>
+          <p>Sensor data collection and display</p>
+        </div>
+        <div class="tpl-card">
+          <h4>door-lock</h4>
+          <p>Smart lock with access control</p>
+        </div>
+        <div class="tpl-card">
+          <h4>led</h4>
+          <p>LED patterns and light control</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ========== STATS ========== -->
+  <section id="stats">
+    <div class="container">
+      <div class="stats-grid fade-up">
+        <div class="stat-box">
+          <div class="stat-number accent">0</div>
+          <div class="stat-label">Core Dependencies</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number green">14</div>
+          <div class="stat-label">Project Templates</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number purple">4</div>
+          <div class="stat-label">Hardware Platforms</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number blue">3</div>
+          <div class="stat-label">Domains</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== INSTALL CTA ========== -->
+  <section id="install">
+    <div class="container">
+      <div class="install-cta fade-up">
+        <h2>Two commands away.</h2>
+        <div class="install-commands">
+          <div class="install-row">
+            <span class="ps">$</span>
+            <span>pip install ludwig</span>
+            <button class="copy-btn" onclick="copyText('pip install ludwig', this)" aria-label="Copy install command">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+          <div class="install-row">
+            <span class="ps">$</span>
+            <span>ludwig new my-app --template api</span>
+            <button class="copy-btn" onclick="copyText('ludwig new my-app --template api', this)" aria-label="Copy scaffold command">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-left">
+          Ludwig v2.0.0 &middot; MIT License
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/ludwig-framework/ludwig" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://github.com/ludwig-framework/ludwig/issues" target="_blank" rel="noopener noreferrer">Issues</a>
+          <a href="https://github.com/ludwig-framework/ludwig/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">Contributing</a>
+          <a href="docs.html">Docs</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- ========== JAVASCRIPT ========== -->
+  <script>
+    /* ===== Theme Toggle ===== */
+    (function() {
+      var toggle = document.getElementById('themeToggle');
+      var root = document.documentElement;
+      var stored = localStorage.getItem('ludwig-theme');
+
+      if (stored) {
+        root.setAttribute('data-theme', stored);
+      }
+
+      toggle.addEventListener('click', function() {
+        var current = root.getAttribute('data-theme');
+        var next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem('ludwig-theme', next);
+      });
+    })();
+
+    /* ===== Fade-Up on Scroll ===== */
+    (function() {
+      var elements = document.querySelectorAll('.fade-up');
+
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -40px 0px'
+        });
+
+        elements.forEach(function(el) {
+          observer.observe(el);
+        });
+      } else {
+        elements.forEach(function(el) {
+          el.classList.add('visible');
+        });
+      }
+    })();
+
+    /* ===== Copy to Clipboard ===== */
+    function copyText(text, btn) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+          showCopied(btn);
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showCopied(btn);
+      }
+    }
+
+    function showCopied(btn) {
+      btn.classList.add('copied');
+      var originalHTML = btn.innerHTML;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      setTimeout(function() {
+        btn.innerHTML = originalHTML;
+        btn.classList.remove('copied');
+      }, 1500);
+    }
+
+    /* ===== Template Command Copy ===== */
+    document.getElementById('tplCommand').addEventListener('click', function() {
+      copyText('ludwig new my-app --template api', this);
+    });
+  </script>
+</body>
+</html>
