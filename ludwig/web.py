@@ -372,3 +372,8 @@ def route(path: str, methods: list[str] = None):
 def api(path: str):
     """Standalone API route decorator."""
     return _get_web().api(path)
+
+def get(path: str):
+    """Standalone GET route decorator."""
+    return _get_web().get(path)
+

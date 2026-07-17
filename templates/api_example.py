@@ -15,7 +15,7 @@ def home(req):
 @app.get("/hello/:name")
 def hello(req):
     name = req.params["name"]
-    return {"message": f"Hello, {name}!"}
+    return {"message": f"Hi, {name}!"}
 
 
 @app.get("/status")

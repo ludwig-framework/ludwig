@@ -136,19 +136,19 @@ For answers to common questions about this code of conduct, see the FAQ at
 
 ## Ludwig Community Values
 
-### 🤝 Collaboration
+### Collaboration
 We believe in the power of diverse perspectives and collaborative development. Ludwig thrives when developers from different backgrounds share their expertise.
 
-### 🌟 Excellence
+### Excellence
 We strive for high-quality code, clear documentation, and thoughtful design. Every contribution matters, whether it's fixing a typo or adding a major feature.
 
-### 🎓 Learning
+### Learning
 Ludwig welcomes developers of all skill levels. We encourage questions, learning, and knowledge sharing within our community.
 
-### 🔧 Innovation
+### Innovation
 We embrace new ideas and approaches to development. Ludwig aims to make programming more accessible and enjoyable for everyone.
 
-### 🌍 Inclusivity
+### Inclusivity
 Our community is open to all developers, regardless of their background, experience level, or perspective. We actively work to create an inclusive environment.
 
 ---

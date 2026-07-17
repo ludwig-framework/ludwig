@@ -28,29 +28,29 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
-## 🏅 Recognition Levels
+## Recognition Levels
 
-### 🌟 First-time Contributor
+### First-time Contributor
 - First merged PR
 - Welcome to the Ludwig community!
 
-### 🚀 Regular Contributor  
+### Regular Contributor  
 - 5+ merged PRs
 - Ongoing community involvement
 
-### 🏆 Core Contributor
+### Core Contributor
 - 25+ merged PRs
 - Significant feature contributions
 - Code review privileges
 
-### 👑 Maintainer
+### Maintainer
 - Repository maintenance access
 - Release management
 - Community leadership
 
 ---
 
-## 📊 Contributor Stats
+## Contributor Stats
 
 - **Total Contributors**: TBD
 - **Code Contributors**: TBD  
@@ -60,7 +60,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
-## 🎁 Contributor Perks
+## Contributor Perks
 
 ### All Contributors
 - Name listed in this file
@@ -84,7 +84,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
-## 🌟 Special Thanks
+## Special Thanks
 
 ### Inspiration & References
 - **Laravel** - Web framework patterns and Artisan CLI inspiration
@@ -104,12 +104,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 Interested in contributing? We'd love to have you!
 
-- 📧 Email: contributors@ludwig-platform.com
-- 💬 GitHub Discussions: [Ludwig Discussions](https://github.com/NanaBright/ludwig/discussions)
-- 🐦 Twitter: [@LudwigPlatform](https://twitter.com/LudwigPlatform)
+- Email: contributors@ludwig-platform.com
+- GitHub Discussions: [Ludwig Discussions](https://github.com/NanaBright/ludwig/discussions)
+- Twitter: [@LudwigPlatform](https://twitter.com/LudwigPlatform)
 
 ---
 
 *This file is updated regularly. If you've contributed and don't see your name, please open an issue!*
 
-**Together, we're building the future of development platforms!** 🚀✨
+**Together, we're building the future of development platforms!**
