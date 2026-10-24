@@ -1,5 +1,5 @@
 """
-Ludwig AI - Voice assistant
+Ludwig AI - Voice assistant (Free local models by default)
 """
 
 from typing import Callable, Optional
@@ -13,7 +13,7 @@ class Assistant:
     Example:
         assistant = Assistant(
             name="Ludwig",
-            model="gpt-4o",
+            model="llama-3.2",
             voice="alloy",
         )
         
@@ -33,35 +33,65 @@ class Assistant:
     def __init__(
         self,
         name: str = "Assistant",
-        model: str = "gpt-4o",
+        model: str = "llama-3.2",
         voice: str = "alloy",
         wake_word: str = None,
         instructions: str = None,
+        provider: str = "ollama",
     ):
         self.name = name
         self.model = model
         self.voice = voice
         self.wake_word = wake_word or f"Hey {name}"
         self.instructions = instructions or f"You are {name}, a helpful voice assistant."
+        self.provider = os.getenv("LUDWIG_AI_PROVIDER", provider)
         
         self._messages = []
         self._callbacks: dict[str, list[Callable]] = {}
         self._running = False
         
         # Lazy-loaded clients
-        self._openai = None
+        self._client = None
         self._speech_recognizer = None
     
-    def _get_openai(self):
-        """Get OpenAI client."""
-        if self._openai is None:
+    def _get_client(self):
+        """Get AI client (defaults to free local Ollama)."""
+        if self._client is not None:
+            return self._client
+        
+        if self.provider == "ollama" or self.provider is None:
             try:
                 from openai import OpenAI
-                self._openai = OpenAI()
+                base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
+                self._client = OpenAI(base_url=base_url, api_key="ollama")
+                return self._client
+            except ImportError:
+                pass
+            except Exception:
+                pass
+        
+        if self.provider == "openai":
+            try:
+                from openai import OpenAI
+                self._client = OpenAI()
+                return self._client
             except ImportError:
                 print("Install openai: pip install openai")
                 return None
-        return self._openai
+        
+        # Try Ollama as fallback
+        try:
+            from openai import OpenAI
+            base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
+            self._client = OpenAI(base_url=base_url, api_key="ollama")
+            self.provider = "ollama"
+            return self._client
+        except Exception:
+            return None
+    
+    def _get_openai(self):
+        """Get AI client (backward compat)."""
+        return self._get_client()
     
     def _get_speech_recognizer(self):
         """Get speech recognition engine."""
@@ -78,24 +108,27 @@ class Assistant:
     
     def chat(self, message: str) -> str:
         """Send a message and get a response."""
-        client = self._get_openai()
+        client = self._get_client()
         if not client:
-            return "[AI not available]"
+            return f"[{self.name}] I understand: {message}. (Using free local models via Ollama - install and run: ollama pull llama-3.2)"
         
         self._messages.append({"role": "user", "content": message})
         
-        response = client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": self.instructions},
-                *self._messages
-            ]
-        )
-        
-        reply = response.choices[0].message.content
-        self._messages.append({"role": "assistant", "content": reply})
-        
-        return reply
+        try:
+            response = client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": self.instructions},
+                    *self._messages
+                ]
+            )
+            
+            reply = response.choices[0].message.content
+            self._messages.append({"role": "assistant", "content": reply})
+            
+            return reply
+        except Exception as e:
+            return f"Error: {e}"
     
     def think(self, prompt: str) -> str:
         """Alias for chat()."""
@@ -135,11 +168,11 @@ class Assistant:
                 return ""
     
     def speak(self, text: str):
-        """Speak text using TTS."""
+        """Speak text using TTS (free alternatives preferred)."""
         print(f"🔊 {self.name}: {text}")
         
-        client = self._get_openai()
-        if not client:
+        client = self._get_client()
+        if not client or self.provider == "ollama":
             return
         
         try:

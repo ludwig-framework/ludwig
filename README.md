@@ -278,3 +278,17 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md).
 ## License
 
 MIT License - see [LICENSE](LICENSE)
+
+## Free & Open Source by Default
+
+Ludwig uses free, local models by default (via [Ollama](https://ollama.com)). No API keys required to get started.
+
+```bash
+# Install Ollama and pull a model
+ollama pull llama-3.2
+
+# Use with Ludwig
+from ludwig.ai import Assistant
+assistant = Assistant(name="Jarvis", model="llama-3.2")
+response = assistant.chat("Hello!")
+```

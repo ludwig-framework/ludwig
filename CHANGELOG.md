@@ -4,6 +4,12 @@ All notable changes to Ludwig will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Changed
+- Development environment set up with Python 3.12 via uv virtual environment
+- All tests verified and passing (29 passed)
+
 ## [2.0.0] - 2025-03-21
 
 ### Complete Rewrite

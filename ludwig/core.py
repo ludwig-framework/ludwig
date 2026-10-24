@@ -26,7 +26,7 @@ class Config:
     
     # AI
     openai_key: Optional[str] = None
-    model: str = "gpt-4o"
+    model: str = "llama-3.2"  # Free local model by default (Ollama)
     
     @classmethod
     def from_file(cls, path: str = "ludwig.json") -> "Config":
@@ -47,6 +47,7 @@ class Config:
             port=int(os.getenv("LUDWIG_PORT", "8000")),
             database_url=os.getenv("DATABASE_URL"),
             openai_key=os.getenv("OPENAI_API_KEY"),
+            model=os.getenv("LUDWIG_MODEL", "llama-3.2"),
         )
 
 

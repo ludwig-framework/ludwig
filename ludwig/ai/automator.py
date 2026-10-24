@@ -32,23 +32,34 @@ class Automator:
         auto.run()
     """
     
-    def __init__(self, model: str = "gpt-4o"):
+    def __init__(self, model: str = "llama-3.2", provider: str = "ollama"):
         self.model = model
+        self.provider = provider
         self.context: dict[str, Any] = {}
         self._rules: list[dict] = []
         self._schedules: list[tuple[str, Callable]] = []
         self._running = False
-        self._openai = None
+        self._client = None
     
-    def _get_openai(self):
-        """Get OpenAI client."""
-        if self._openai is None:
+    def _get_client(self):
+        if self._client is not None:
+            return self._client
+        try:
+            from openai import OpenAI
+            import os
+            base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
+            self._client = OpenAI(base_url=base_url, api_key="ollama")
+            return self._client
+        except Exception:
             try:
                 from openai import OpenAI
-                self._openai = OpenAI()
-            except ImportError:
+                self._client = OpenAI()
+                return self._client
+            except Exception:
                 return None
-        return self._openai
+    
+    def _get_openai(self):
+        return self._get_client()
     
     def add_rule(self, rule: str):
         """
@@ -219,9 +230,9 @@ class Automator:
     
     def _execute_with_ai(self, action: str):
         """Use AI to figure out how to execute action."""
-        client = self._get_openai()
+        client = self._get_client()
         if not client:
-            print(f"   Could not execute: {action}")
+            print(f"   Could not execute: {action} (free local models via Ollama recommended)")
             return
         
         # Build context description
@@ -230,25 +241,28 @@ class Automator:
             for name, obj in self.context.items()
         ])
         
-        response = client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": f"""You are a home automation assistant.
+        try:
+            response = client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": f"""You are a home automation assistant.
 Available devices/context:
 {context_desc}
 
 Convert the user's action into Python code that uses these objects.
 Only output the Python code, nothing else."""},
-                {"role": "user", "content": action}
-            ]
-        )
-        
-        code = response.choices[0].message.content
-        print(f"   Generated: {code}")
-        
-        # Execute the generated code (careful!)
-        try:
-            exec(code, self.context)
+                    {"role": "user", "content": action}
+                ]
+            )
+            
+            code = response.choices[0].message.content
+            print(f"   Generated: {code}")
+            
+            # Execute the generated code (careful!)
+            try:
+                exec(code, self.context)
+            except Exception as e:
+                print(f"   Error: {e}")
         except Exception as e:
             print(f"   Error: {e}")
     
@@ -331,35 +345,38 @@ Only output the Python code, nothing else."""},
     def evaluate(self, prompt: str) -> str:
         """
         Evaluate a natural language query about the system.
-        
-        Example:
-            result = auto.evaluate("Is it too hot in the living room?")
         """
-        client = self._get_openai()
+        client = self._get_client()
         if not client:
-            return "AI not available"
+            return "AI not available (use Ollama for free local models)"
         
         # Build context
         context_data = {}
         for name, obj in self.context.items():
-            if callable(obj):
-                context_data[name] = obj()
-            else:
-                context_data[name] = str(obj)
+            try:
+                if callable(obj):
+                    context_data[name] = obj()
+                else:
+                    context_data[name] = str(obj)
+            except Exception:
+                context_data[name] = str(type(obj))
         
-        response = client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": f"""You are a home automation assistant.
+        try:
+            response = client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": f"""You are a home automation assistant.
 Current state:
 {context_data}
 
 Answer the user's question based on this data."""},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        
-        return response.choices[0].message.content
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            
+            return response.choices[0].message.content
+        except Exception as e:
+            return f"Error: {e}"
     
     def __repr__(self):
         return f"Automator(rules={len(self._rules)})"

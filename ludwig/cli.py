@@ -368,7 +368,7 @@ from ludwig.ai import Assistant
 
 assistant = Assistant(
     name="Ludwig",
-    model="gpt-4o",
+    model="llama-3.2",
     voice="alloy",
 )
 
@@ -464,7 +464,7 @@ from ludwig import App
 from ludwig.ai import Assistant
 
 app = App()
-assistant = Assistant(name="Bot", model="gpt-4o-mini")
+assistant = Assistant(name="Bot", model="llama-3.2")
 
 @app.route("/")
 def chat_ui(req):
