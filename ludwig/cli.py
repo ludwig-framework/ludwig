@@ -45,6 +45,11 @@ Examples:
     run_parser = subparsers.add_parser("run", help="Run a Ludwig file")
     run_parser.add_argument("file", help="File to run")
     
+    # serve command
+    serve_parser = subparsers.add_parser("serve", help="Start server (alias for dev)")
+    serve_parser.add_argument("--port", "-p", type=int, default=8000, help="Port")
+    serve_parser.add_argument("--host", default="0.0.0.0", help="Host")
+    
     # version command
     subparsers.add_parser("version", help="Show version")
     
@@ -59,6 +64,8 @@ Examples:
     elif args.command == "version":
         from ludwig import __version__
         print(f"Ludwig v{__version__}")
+    elif args.command == "serve":
+        run_dev_server(getattr(args, 'host', None) or '0.0.0.0', getattr(args, 'port', None) or 8000, True)
     else:
         parser.print_help()
 

@@ -37,7 +37,7 @@ app.run()
 - **Pure Python** — No custom syntax. No DSLs. Just Python.
 - **Templates for Everything** — Start a robot, API, or smart home in seconds
 - **Hardware Agnostic** — Works on Raspberry Pi, ESP32, Arduino, or simulation
-- **AI Built-In** — Voice assistants, computer vision, automation
+- **AI Built-In** — Voice assistants, computer vision, automation with free local models
 - **Minimal Dependencies** — Core framework has zero external dependencies
 
 ---
