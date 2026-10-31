@@ -6,9 +6,11 @@
 <p align="center"><strong>Simple Python for Web, IoT, and AI</strong></p>
 
 <p align="center">
+  <a href="https://github.com/ludwig-framework/ludwig/actions/workflows/ci.yml"><img src="https://github.com/ludwig-framework/ludwig/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="MIT License"></a>
   <a href="https://github.com/ludwig-framework/ludwig/stargazers"><img src="https://img.shields.io/github/stars/ludwig-framework/ludwig?style=flat&logo=github&color=yellow" alt="Stars"></a>
   <a href="#"><img src="https://img.shields.io/badge/python-3.10+-blue" alt="Python 3.10+"></a>
+  <a href="https://github.com/ludwig-framework/conductor"><img src="https://img.shields.io/badge/AI%20Agents-Conductor-blueviolet" alt="Conductor Agents"></a>
 </p>
 
 ---
