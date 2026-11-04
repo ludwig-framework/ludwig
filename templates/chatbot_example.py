@@ -70,7 +70,7 @@ def chat_ui():
 
 @route("/chat", methods=["POST"])
 def chat(message: str):
-    reply = assistant.ask(message)
+    reply = assistant.chat(message)
     return {"reply": reply}
 
 if __name__ == "__main__":

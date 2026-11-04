@@ -24,7 +24,7 @@ def detect_board() -> Board:
         with open("/proc/cpuinfo") as f:
             if "Raspberry Pi" in f.read():
                 return Board.RASPBERRY_PI
-    except:
+    except OSError:
         pass
     
     # Check for MicroPython (ESP32)

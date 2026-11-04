@@ -4,13 +4,9 @@ Ludwig is a Python framework for building Web APIs, IoT systems, and AI applicat
 
 ## Installation
 
-### From PyPI (Recommended)
+### From GitHub
 
-```bash
-pip install ludwig
-```
-
-### From GitHub (Development)
+The PyPI package named `ludwig` is a different project. Install this framework from source:
 
 ```bash
 git clone https://github.com/ludwig-framework/ludwig.git
@@ -21,17 +17,11 @@ pip install -e .
 ### Optional Dependencies
 
 ```bash
-# For AI features (voice assistant, chat)
-pip install ludwig[ai]
-
-# For computer vision
-pip install ludwig[vision]
-
-# For Raspberry Pi
-pip install ludwig[pi]
-
-# Everything
-pip install ludwig[all]
+# From a source checkout
+pip install -e ".[ai]"      # voice assistant, chat
+pip install -e ".[vision]"  # computer vision
+pip install -e ".[pi]"      # Raspberry Pi
+pip install -e ".[all]"
 ```
 
 ## Your First Project

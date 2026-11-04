@@ -6,9 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- `Assistant.ask()` as an alias of `chat()` (chatbot templates)
+- `Light.set_color()`, `set_brightness()`, and `effect()` for RGB/WS2812-style templates
+- Sensor type aliases (`dht22`, `bmp280`, `ldr`, `magnetic`, `reading="humidity"`)
+- Optional alarm PIN on `disarm()`
+- CLI template compile tests
+
 ### Changed
-- Development environment set up with Python 3.12 via uv virtual environment
-- All tests verified and passing (29 passed)
+- Install docs use GitHub/source; `pip install ludwig` is a different PyPI project
+- CONTRIBUTING.md rewritten for the v2 Python API (removed leftover DSL guide)
+- CI fails on pytest and on critical Ruff rules instead of `|| true`
+- Arduino hardware table no longer claims unreleased I2C/SPI support
+
+### Fixed
+- Door-lock templates called `Relay.is_on` as a method
+- LED templates passed unsupported `Light` kwargs
+- `App.at("sunset")` compared the word sunset to `HH:MM`
+- `ludwig run` no longer shells out via `os.system`
 
 ## [2.0.0] - 2025-03-21
 

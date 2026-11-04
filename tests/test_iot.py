@@ -74,6 +74,11 @@ class TestActuators:
         light.brightness(50)
         light.brightness(100)
 
+    def test_rgb_light_kwargs(self):
+        light = Light(pin=18, type="ws2812b", count=8)
+        light.set_color(0, 0, 0)
+        assert not light.is_on
+
 
 class TestRobot:
     """Test Robot class."""
@@ -115,6 +120,7 @@ class TestAlarm:
     def test_arm_disarm(self):
         """Test arming and disarming."""
         alarm = Alarm()
+        alarm.exit_delay = 0
         alarm.arm()
         assert alarm._armed
         alarm.disarm()

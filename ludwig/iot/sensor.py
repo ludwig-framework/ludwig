@@ -7,6 +7,19 @@ from dataclasses import dataclass
 from ludwig.iot.pin import Pin, Board
 import time
 
+# Hardware model names used in templates, mapped to Sensor.read() kinds.
+_SENSOR_ALIASES = {
+    "dht11": "temperature",
+    "dht22": "temperature",
+    "ds18b20": "temperature",
+    "bmp280": "pressure",
+    "bme280": "pressure",
+    "ldr": "light",
+    "keypad": "keypad",
+    "rfid": "rfid",
+    "magnetic": "door",
+}
+
 
 class Sensor:
     """
@@ -37,6 +50,20 @@ class Sensor:
         name: Optional[str] = None,
         **config
     ):
+        reading = config.pop("reading", None)
+        raw_type = sensor_type
+        if reading == "humidity":
+            config.setdefault("type", raw_type if raw_type in ("dht11", "dht22") else "dht22")
+            sensor_type = "humidity"
+        elif sensor_type in _SENSOR_ALIASES:
+            mapped = _SENSOR_ALIASES[sensor_type]
+            if mapped == "temperature":
+                config.setdefault("type", raw_type)
+            sensor_type = mapped
+
+        if isinstance(pins, (list, tuple)):
+            pins = {str(i): p for i, p in enumerate(pins)}
+
         self.sensor_type = sensor_type
         self.pin = pin
         self.pins = pins or {}
@@ -67,6 +94,8 @@ class Sensor:
             return self._read_moisture()
         elif self.sensor_type == "light":
             return self._read_light()
+        elif self.sensor_type == "pressure":
+            return self._read_pressure()
         elif self.sensor_type == "door":
             return self._read_digital()
         elif self.sensor_type == "window":
@@ -171,6 +200,11 @@ class Sensor:
         """Read light sensor (analog, 0-100%)."""
         import random
         return int(random.random() * 100)
+
+    def _read_pressure(self) -> float:
+        """Read barometric pressure (hPa). Simulated when hardware is unavailable."""
+        import random
+        return round(980 + random.random() * 40, 1)
     
     def _read_ds18b20(self) -> float:
         """Read DS18B20 temperature sensor."""

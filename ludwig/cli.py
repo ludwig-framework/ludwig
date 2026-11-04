@@ -4,6 +4,7 @@ Ludwig CLI - Command line interface with project templates
 
 import argparse
 import os
+import subprocess
 import sys
 
 
@@ -152,7 +153,7 @@ def run_dev_server(host: str, port: int, reload: bool = True):
 
 def run_file(file: str):
     """Run a Ludwig file."""
-    os.system(f"{sys.executable} {file}")
+    subprocess.run([sys.executable, file], check=False)
 
 
 # === Templates ===
@@ -515,7 +516,7 @@ def chat_ui(req):
 
 @app.route("/chat", methods=["POST"])
 def chat(req):
-    return {"reply": assistant.ask(req.json.get("message", ""))}
+    return {"reply": assistant.chat(req.json.get("message", ""))}
 
 if __name__ == "__main__":
     app.run(port=8000)
@@ -630,7 +631,7 @@ def ui(req):
 
 @app.route("/status")
 def status(req):
-    return {"locked": not lock.is_on()}
+    return {"locked": not lock.is_on}
 
 @app.route("/unlock", methods=["POST"])
 def unlock(req):

@@ -133,6 +133,10 @@ class Assistant:
     def think(self, prompt: str) -> str:
         """Alias for chat()."""
         return self.chat(prompt)
+
+    def ask(self, message: str) -> str:
+        """Alias for chat() used by chatbot templates."""
+        return self.chat(message)
     
     def clear_history(self):
         """Clear conversation history."""
