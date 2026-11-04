@@ -46,19 +46,17 @@ app.run()
 
 ## Quick Start
 
-### Install from PyPI
+### Install from GitHub
 
-```bash
-pip install ludwig
-```
-
-### Or Clone from GitHub
+The name `ludwig` on PyPI belongs to a different project (a declarative ML toolkit). Install this framework from source:
 
 ```bash
 git clone https://github.com/ludwig-framework/ludwig.git
 cd ludwig
 pip install -e .
 ```
+
+Optional extras: `pip install -e ".[ai]"`, `".[vision]"`, `".[pi]"`, or `".[all]"`.
 
 ### Create a Project
 
@@ -219,7 +217,7 @@ Ludwig works on multiple platforms with automatic fallback to simulation:
 |----------|------|-----|-----|-----|
 | Raspberry Pi | ✅ | ✅ | ✅ | ✅ |
 | ESP32 | ✅ | ✅ | ✅ | ✅ |
-| Arduino | ✅ | 🔜 | 🔜 | ✅ |
+| Arduino | simulation | — | — | simulation |
 | Desktop (Simulation) | ✅ | ✅ | ✅ | ✅ |
 
 ---
@@ -256,7 +254,7 @@ ludwig/
 │       ├── assistant.py # Voice assistant
 │       ├── vision.py    # Computer vision
 │       └── automator.py # NL automation
-└── examples/            # Example projects
+└── templates/           # Example projects
 ```
 
 ---

@@ -127,7 +127,7 @@ def lock_ui():
 @route("/status")
 def get_status():
     return {
-        "locked": not lock.is_on(),
+        "locked": not lock.is_on,
         "door_closed": door_sensor.read() == 1
     }
 

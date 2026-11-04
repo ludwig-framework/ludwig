@@ -242,6 +242,10 @@ class App:
                     if interval_spec.startswith("at:"):
                         # Time-based: at:sunset, at:08:30
                         time_target = interval_spec[3:]
+                        if time_target == "sunset":
+                            time_target = "18:00"
+                        elif time_target == "sunrise":
+                            time_target = "06:00"
                         if time_target == now_str:
                             key = id(func)
                             if key not in last_run or now - last_run[key] > 60:

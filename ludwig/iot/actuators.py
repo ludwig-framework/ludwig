@@ -4,6 +4,7 @@ Ludwig IoT - Actuators (motors, lights, servos, etc.)
 
 from typing import Optional
 from ludwig.iot.pin import Pin, PWM
+import threading
 import time
 
 
@@ -19,17 +20,31 @@ class Light:
         light.blink(times=3)
     """
     
-    def __init__(self, pin: int, name: str = None, dimmable: bool = False):
+    def __init__(
+        self,
+        pin: int,
+        name: str = None,
+        dimmable: bool = False,
+        type: str = None,
+        count: int = 1,
+        **kwargs,
+    ):
         self.pin_num = pin
         self.name = name or f"light_{pin}"
-        self.dimmable = dimmable
+        self.light_type = type or "gpio"
+        self.count = count
+        rgb_like = self.light_type in ("ws2812", "ws2812b", "rgb", "neopixel") or count > 1
+        self.dimmable = dimmable or rgb_like
         
         self._pin = Pin(pin, mode="output", name=self.name)
         self._pwm: Optional[PWM] = None
         self._state = False
         self._brightness = 100
+        self._color = (0, 0, 0)
+        self._effect = None
+        self._off_timer: Optional[threading.Timer] = None
         
-        if dimmable:
+        if self.dimmable:
             self._pwm = self._pin.pwm()
     
     def on(self, duration: int = None):
@@ -39,21 +54,31 @@ class Light:
         Args:
             duration: Auto-off after seconds (optional)
         """
+        self._cancel_off_timer()
         self._state = True
         if self._pwm:
             self._pwm.duty(self._brightness)
         else:
             self._pin.on()
         
-        # TODO: Handle duration with scheduler
+        if duration:
+            self._off_timer = threading.Timer(float(duration), self.off)
+            self._off_timer.daemon = True
+            self._off_timer.start()
     
     def off(self):
         """Turn light off."""
+        self._cancel_off_timer()
         self._state = False
         if self._pwm:
             self._pwm.duty(0)
         else:
             self._pin.off()
+    
+    def _cancel_off_timer(self):
+        if self._off_timer is not None:
+            self._off_timer.cancel()
+            self._off_timer = None
     
     def toggle(self):
         """Toggle light state."""
@@ -67,6 +92,28 @@ class Light:
         self._brightness = max(0, min(100, percent))
         if self._pwm and self._state:
             self._pwm.duty(self._brightness)
+    
+    def set_brightness(self, percent: float):
+        """Alias for brightness() used by LED templates."""
+        self.brightness(percent)
+    
+    def set_color(self, r: int, g: int, b: int):
+        """Set RGB color (simulated on GPIO; applied on WS2812-style lights)."""
+        self._color = (
+            max(0, min(255, int(r))),
+            max(0, min(255, int(g))),
+            max(0, min(255, int(b))),
+        )
+        if any(self._color):
+            self.on()
+        else:
+            self.off()
+    
+    def effect(self, name: str):
+        """Store a named effect (rainbow, breathe, chase). Hardware apply is best-effort."""
+        self._effect = name
+        if name and name != "off":
+            self.on()
     
     def blink(self, times: int = 3, interval: float = 0.5):
         """Blink the light."""

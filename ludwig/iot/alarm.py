@@ -35,8 +35,9 @@ class Alarm:
         alarm.run()
     """
     
-    def __init__(self, name: str = "alarm"):
+    def __init__(self, name: str = "alarm", code: str = None):
         self.name = name
+        self._code = code
         self._sensors: list[tuple[Sensor, str]] = []  # (sensor, zone)
         self._siren: Optional[Buzzer] = None
         self._strobe: Optional[Light] = None
@@ -93,8 +94,11 @@ class Alarm:
             self._siren.beep(duration=0.5)
     
     def disarm(self, code: str = None):
-        """Disarm the alarm."""
-        # TODO: Verify code
+        """Disarm the alarm. If a PIN was set on the alarm, it must match."""
+        if self._code is not None and code != self._code:
+            print("Invalid disarm code")
+            return False
+
         self._armed = False
         self._triggered = False
         
@@ -104,6 +108,7 @@ class Alarm:
             self._strobe.off()
         
         print("🔓 Alarm disarmed")
+        return True
     
     def trigger(self, zone: str, sensor: Sensor):
         """Trigger the alarm."""
